@@ -54,11 +54,14 @@ If a skill produced output that the user pushed back on, corrected, or significa
 
 1. Identify what was wrong or incomplete in the original instructions
 2. Rewrite only the affected section(s) — full rewrites only if the issue is structural
-3. Version the file:
+3. Version the file. NOTE: this `-vN.N` filename convention applies ONLY to skills that
+   live in Google Drive (which cannot edit files in place). Skills in the public git repo
+   are edited IN PLACE with NO suffix — git history is their version log (see
+   verify-before-versioning). For a Drive skill:
    - First update to any skill: add `-v1.1` before `.md` (e.g. `diagnose-v1.1.md`)
    - Subsequent updates: increment minor version (`-v1.2`, `-v1.3`)
    - Major rework: bump major version (`-v2.0`)
-4. Save to the same folder as the original
+4. Save to the same folder as the original (Drive); for a repo skill, edit in place and commit
 5. Report: "Updated [skill name] → [new version] — [what changed and why]"
 
 ---

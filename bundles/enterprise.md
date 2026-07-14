@@ -1,9 +1,12 @@
 # Bundle: Enterprise
-# Last updated: July 14, 2026 (v1.5: prepared for the public skills repo — skill
-# paths are now repo-relative (were "Claude Skills/skills/..."), and the board-of-directors
-# reference points at the real file. NOTE: the board-of-directors SKILL is public, but the
-# personal board PROFILE it loads (board-of-directors-default-profile-*.md) is PRIVATE — it
-# lives only in Google Drive, not this repo.)
+# Versioning: this file is edited IN PLACE. Git history is the version log —
+# run `git log --follow bundles/enterprise.md` to see every change. Do NOT add a
+# -vN.N suffix to any file in this repo; that convention existed only because Google
+# Drive could not edit files in place, and suffixed filenames break the raw URLs that
+# project instructions point at.
+# Last substantive change: 2026-07-14 — de-versioned the library (dropped -vN.N
+# suffixes). NOTE: the board-of-directors SKILL is public here, but the personal board
+# PROFILE it loads is PRIVATE and lives only in Google Drive.
 
 Load these skills for business communications and brand-consistent output.
 
@@ -14,9 +17,9 @@ Load these skills for business communications and brand-consistent output.
 3. engineering/verify-before-versioning.md
 4. engineering/trust-the-live-signal.md
 5. engineering/no-assumed-memory.md
-6. engineering/propagate-the-lesson-v1.1.md
+6. engineering/propagate-the-lesson.md
 7. engineering/close-known-gaps.md
-8. productivity/board-of-directors-v1.1.md
+8. productivity/board-of-directors.md
 
 ## What each skill does
 

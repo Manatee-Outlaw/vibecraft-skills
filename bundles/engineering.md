@@ -1,9 +1,12 @@
 # Bundle: Engineering Project
-# Last updated: July 14, 2026 (v1.15: prepared for the public skills repo —
-# all skill paths are now repo-relative (were "Claude Skills/skills/..."), the
-# board-of-directors reference was fixed to the real file (board-of-directors-v1.1.md),
-# and two business-specific skills (copy-review, database-review) were moved to the
-# PRIVATE section below — they load from Google Drive, not from this repo.)
+# Versioning: this file is edited IN PLACE. Git history is the version log —
+# run `git log --follow bundles/engineering.md` to see every change. Do NOT add a
+# -vN.N suffix to any file in this repo; that convention existed only because Google
+# Drive could not edit files in place, and suffixed filenames break the raw URLs that
+# project instructions point at.
+# Last substantive change: 2026-07-14 — de-versioned the library (dropped -vN.N
+# suffixes); prepared for the public repo (repo-relative paths; copy-review and
+# database-review moved to the PRIVATE section below, loaded from Google Drive).
 
 Load these skills at the start of any software/coding project conversation.
 
@@ -14,13 +17,13 @@ Load these skills at the start of any software/coding project conversation.
 3. engineering/to-prd.md
 4. engineering/improve-codebase-architecture.md
 5. engineering/flow-test.md
-6. engineering/holistic-code-audit-v1.1.md
+6. engineering/holistic-code-audit.md
 7. engineering/verify-before-claiming.md
 8. engineering/verify-before-versioning.md
 9. engineering/trust-the-live-signal.md
 10. engineering/no-assumed-memory.md
 11. engineering/propagate-the-fix.md
-12. engineering/propagate-the-lesson-v1.1.md
+12. engineering/propagate-the-lesson.md
 13. engineering/close-known-gaps.md
 14. engineering/no-dead-ends.md
 15. engineering/hostile-environment-testing.md
@@ -33,16 +36,16 @@ Load these skills at the start of any software/coding project conversation.
 22. engineering/ux-review.md
 23. engineering/mobile-ux.md
 24. engineering/cross-project-audit.md
-25. engineering/external-integration-audit-v1.1.md
+25. engineering/external-integration-audit.md
 26. engineering/security-audit.md
 27. engineering/production-drift.md
 28. engineering/skill-library-audit.md
 29. engineering/session-cold-start.md
 30. engineering/version-management.md
-31. engineering/comprehensive-audit-v2.1.md
+31. engineering/comprehensive-audit.md
 32. engineering/discord-announcements.md
 33. engineering/hermes-upload.md
-34. productivity/board-of-directors-v1.1.md
+34. productivity/board-of-directors.md
 
 (copy-review and database-review are intentionally absent — see the PRIVATE section below.)
 
@@ -85,14 +88,13 @@ Load these skills at the start of any software/coding project conversation.
 
 ## PRIVATE — not in this repo; load from Google Drive
 
-These two skills are business-specific and are NOT published to this repo. The
-orchestrator loads them from Google Drive when triggered:
+These load from Google Drive, not this repo. **Drive files are still version-suffixed**
+(Drive cannot edit in place) — always search Drive for the highest-numbered version
+rather than assuming a filename. The private set is exactly:
 
-- **copy-review.md** — Reviews the product's own interface copy against its specific coaching voice. Trigger: "copy review".
-- **database-review.md** — Dedicated operational database audit against the live production database. Trigger: "database review".
-
-(The board-of-directors skill IS in this repo, but the personal board *profile* it
-loads — `board-of-directors-default-profile-*.md` — is private and lives only in Drive.)
+- **copy-review** — Reviews the product's own interface copy against its specific coaching voice. Trigger: "copy review".
+- **database-review** — Dedicated operational database audit against the live production database. Trigger: "database review".
+- **board-of-directors profile** — the personal board profile (`board-of-directors-default-profile-*.md`) that the public `board-of-directors` skill loads. The SKILL is in this repo; the PROFILE is private and lives only in Drive.
 
 ## When to run each review
 
@@ -111,7 +113,7 @@ loads — `board-of-directors-default-profile-*.md` — is private and lives onl
 
 ## Comprehensive audit — self-contained, no manual steps needed
 
-Say "comprehensive audit" and comprehensive-audit-v2.1 handles everything —
+Say "comprehensive audit" and the comprehensive-audit skill handles everything —
 10 concurrent subagents, all 8 governing standards applied automatically to
 every finding. Nothing needs to be manually re-specified.
 
