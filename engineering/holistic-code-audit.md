@@ -10,7 +10,7 @@ description: >
   For a deeper Claude Code audit via task.md, use engineering-review instead.
 ---
 
-# Holistic Code Audit Skill (v1.1)
+# Holistic Code Audit Skill
 
 ## When to use this skill
 Use whenever the user asks for a **code review**, **audit**, **debugging session**,
@@ -85,9 +85,9 @@ Do the pieces actually agree with each other?
 **Cross-component data flow (the integration seam check):**
 This exact technique — tracing where user input lives and whether the next
 component actually reads it — is covered in full detail by flow-test's Phase 0
-("Map data handoffs"). Rather than duplicate that content here (v1.0 of this
-skill did, and the two copies risked drifting apart if only one was ever
-updated), this discipline now points there directly: **for any audit where
+("Map data handoffs"). Rather than duplicate that content here (this skill
+once did, and the two copies risked drifting apart if only one was ever
+updated), this discipline points there directly: **for any audit where
 this specific check matters, run flow-test's Phase 0 alongside this
 discipline, or in follow-up.** The short version, for a quick in-chat pass
 without switching skills: for every meaningful piece of user input, trace
@@ -151,12 +151,12 @@ tangled to test properly," flag it for improve-codebase-architecture.
 For a deeper automated check via Claude Code covering database associations, undefined
 variables, auth gaps, and route verification, follow up with engineering-review.
 
-## v1.1 change note
+## Why discipline 6 points at flow-test instead of repeating it
 
-Trimmed the "Cross-component data flow" sub-section of discipline 6, which
-had independently grown to duplicate flow-test's Phase 0 ("Map data
-handoffs") almost word-for-word — same technique, same steps, described
-twice in two different skill files with no connection between them. Found
-during a full read-through of the skill library. Now points to flow-test
-as the canonical source for that specific technique, with a short summary
-kept here so a quick in-chat pass doesn't require switching skills.
+The "Cross-component data flow" check and flow-test's Phase 0 ("Map data
+handoffs") independently grew into near-identical copies of the same
+technique, described twice in two skill files with no connection between
+them — so either could be updated while the other silently drifted.
+flow-test is the canonical source for that technique. Keep the short
+summary here so a quick in-chat pass doesn't require switching skills, and
+do not let the long version grow back.

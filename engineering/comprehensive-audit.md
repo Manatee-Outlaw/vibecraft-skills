@@ -14,7 +14,7 @@ description: >
   Never run a partial audit when this skill triggers.
 ---
 
-# Comprehensive Audit (Subagent Edition, v2.1)
+# Comprehensive Audit (Subagent Edition)
 
 Runs the full engineering audit using Claude Code's subagent capability.
 One dedicated subagent per skill. All subagents run concurrently — not
@@ -28,14 +28,14 @@ Adding skill #11 means appending it to the list. It gets its own
 dedicated subagent automatically — no other changes to this skill required.
 Never batch two audit skills into one subagent.
 
-**v2.1 change from v2.0:** added the GOVERNING STANDARDS section below.
-Previously, disciplines like verify-before-claiming and propagate-the-fix
-were only applied to a comprehensive audit when manually typed into the
-task.md by whoever wrote it that time — meaning every past comprehensive
-audit only got these standards because a human-authored task happened to
-include them, not because this skill required it. That's now fixed: these
-standards are part of the skill itself and apply automatically every time
-this skill triggers, regardless of who or what writes the resulting task.
+**Why the GOVERNING STANDARDS live in this skill, not in the task:**
+disciplines like verify-before-claiming and propagate-the-fix used to reach
+an audit only when someone manually typed them into the task.md that time —
+so an audit got them because a human-authored task happened to include them,
+not because this skill required it. They are part of the skill itself
+precisely so that stops being true: they apply automatically every time this
+skill triggers, regardless of who or what writes the resulting task. Do not
+move them back out into the task author's hands.
 
 ---
 

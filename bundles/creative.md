@@ -30,7 +30,7 @@ Load these skills for visual design, generative art, and themed output.
 - **verify-before-versioning** — Before creating any new skill file, or a new version of an existing skill/bundle, always do a fresh, live search of the actual Drive folder right now. Always-on.
 - **trust-the-live-signal** — When a stored value or documentation disagrees with a live, directly-checkable signal, trust the live signal. Always-on.
 - **no-assumed-memory** — Never assume a fresh session shares memory with a different conversation. Always-on whenever work crosses a session boundary.
-- **propagate-the-lesson** — UPDATED to v1.1. Whenever a genuinely general-purpose lesson or fix is identified, check every bundle for the same applicability. Now also explicitly checks whether a new skill needs registering in comprehensive-audit's own lists, not just added to a bundle. Always-on.
+- **propagate-the-lesson** — Whenever a genuinely general-purpose lesson or fix is identified, check every bundle for the same applicability. Now also explicitly checks whether a new skill needs registering in comprehensive-audit's own lists, not just added to a bundle. Always-on.
 - **close-known-gaps** — Once a real, known issue has been surfaced, the default is to fix it now rather than narrowing scope. Always-on.
 - **board-of-directors** — Convenes the user's personal Board of Directors. Say "convene my board" at any point.
 

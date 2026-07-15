@@ -8,7 +8,7 @@ description: >
   only the one spot that prompted it. This is propagate-the-fix's scope
   raised one level: from "this pattern repeats elsewhere in the codebase"
   to "this pattern repeats elsewhere in the skill library, other bundles,
-  or other projects entirely." As of v1.1, this explicitly includes
+  or other projects entirely." This explicitly includes
   checking whether a new skill needs registering in comprehensive-audit's
   own AUDIT SKILLS or GOVERNING STANDARDS lists — a new skill existing is
   not the same as it actually being run. Trigger automatically whenever a
@@ -16,7 +16,7 @@ description: >
   because a real gap was found — no trigger phrase needed.
 ---
 
-# Propagate The Lesson (v1.1)
+# Propagate The Lesson
 
 ## Why this skill exists
 
@@ -29,8 +29,8 @@ library (creative, enterprise, productivity, and any future one). The
 lesson was general. The first fix was narrow. Only a direct follow-up
 question caught the gap.
 
-**v1.1 update:** this same skill had its own version of the exact problem
-it exists to catch. comprehensive-audit was updated so its governing
+**This skill had its own version of the exact problem it exists to catch.**
+comprehensive-audit was updated so its governing
 standards apply automatically to every audit — a real, valuable fix. But
 nothing was added to check whether *future* new skills would automatically
 be registered in comprehensive-audit's own lists (the AUDIT SKILLS list
@@ -67,7 +67,7 @@ else does this apply, and has it been applied there too?**
    bundles — not just the one the triggering incident happened in.
 3. **Apply the lesson everywhere it's found to apply**, not just note that
    it could. Add the new skill to every relevant bundle's load list.
-4. **NEW (v1.1) — check comprehensive-audit's own lists specifically.**
+4. **Check comprehensive-audit's own lists specifically.**
    If the new skill is a genuine AUDIT CATEGORY (something that should
    examine the codebase for a class of problem, like the existing 10), it
    needs to be appended to comprehensive-audit's AUDIT SKILLS list. If the
@@ -79,8 +79,9 @@ else does this apply, and has it been applied there too?**
    audit run — those are two different registration points, and both
    need to be checked, not just the first one. This applies specifically
    because comprehensive-audit is itself a self-contained skill file with
-   its own internal lists (see v2.1) — updating the bundle alone is not
-   sufficient to make a new discipline actually run inside an audit.
+   its own internal lists (see its AUDIT SKILLS and GOVERNING STANDARDS
+   sections) — updating the bundle alone is not sufficient to make a new
+   discipline actually run inside an audit.
 5. **Be explicit about the boundary of what could actually be checked and
    applied directly, versus what's outside reach.** A genuinely separate
    Claude Project this conversation has no access to is not reachable
@@ -108,7 +109,7 @@ was found in, it's narrow — leave it where it is, and say so explicitly.
   skill's original creation.
 - **skill-library-audit**: the periodic, scheduled sweep that can catch a
   missed propagation after the fact — including a missed comprehensive-
-  audit registration, per this v1.1 update. propagate-the-lesson is the
+  audit registration, per point 4 above. propagate-the-lesson is the
   in-the-moment version — catching it immediately is strictly better than
   catching it later.
 
