@@ -17,7 +17,7 @@ last_updated: 2026-05-27
 
 # Project Planning Skill
 
-> **Communication note:** The user is a non-technical solo operator with a sales background.
+> **Communication note:** The reader may not be technical.
 > Lead with business impact, not technical detail. Use plain language.
 > Always give a recommendation — don't just present options and leave the decision open.
 

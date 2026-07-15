@@ -13,8 +13,8 @@ last_updated: 2026-06-29
 
 # Mobile UX Review
 
-> **Communication note:** The user is a non-technical solo operator. Every
-> finding should be framed around what the streamer experiences on their phone,
+> **Communication note:** The reader may not be technical. Every
+> finding should be framed around what the user experiences on their phone,
 > not technical specifications. "A streamer with large thumbs can't hit this
 > button reliably" is more useful than "touch target below 44px."
 

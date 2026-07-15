@@ -14,9 +14,9 @@ last_updated: 2026-06-29
 
 # UX Review
 
-> **Communication note:** The user is a non-technical solo operator running a
-> coaching agency. Frame all findings in terms of what a streamer (the actual
-> user) would experience, not in technical terms. Every finding should answer:
+> **Communication note:** The reader may not be technical. Frame all findings
+> in terms of what the end user would experience, not in technical terms.
+> Every finding should answer:
 > "what does this cost the streamer?" — confusion, wasted time, lost trust, or
 > a coaching moment missed.
 
