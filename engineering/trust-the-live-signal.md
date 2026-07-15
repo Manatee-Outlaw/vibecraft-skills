@@ -57,7 +57,7 @@ them should be trusted over a direct, live check when one is possible.
    when the real thing is reachable.
 2. **When a live check and a stored/documented value disagree, don't just
    pick the live one and move on — understand why they diverged.** The
-   VMSC version field wasn't wrong by accident; it revealed a real fact
+   stored version field wasn't wrong by accident; it revealed a real fact
    (the field is write-once-on-manual-download, not live-synced) that was
    worth knowing on its own. The disagreement itself is often the most
    useful piece of information in the whole investigation.

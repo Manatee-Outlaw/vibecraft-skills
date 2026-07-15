@@ -47,9 +47,8 @@ Load these skills at the start of any software/coding project conversation.
 32. engineering/comprehensive-audit.md
 33. engineering/discord-announcements.md
 34. engineering/hermes-upload.md
-35. productivity/board-of-directors.md
 
-(copy-review and database-review are intentionally absent — see the PRIVATE section below.)
+(copy-review, database-review and board-of-directors are intentionally absent — see the PRIVATE section below.)
 
 ## What each skill does (plain English)
 
@@ -87,7 +86,6 @@ Load these skills at the start of any software/coding project conversation.
 - **comprehensive-audit** — Runs the full engineering audit via concurrent subagents. All governing standards are baked into the skill itself and apply automatically. Trigger: "comprehensive audit", "full audit", "audit everything."
 - **discord-announcements** — Drafts Discord announcements. Trigger: "draft a Discord announcement".
 - **hermes-upload** — Generates a handoff document and uploads to Drive. Trigger: "hermes upload".
-- **board-of-directors** — Convenes your personal Board of Directors. Trigger: "convene my board".
 
 ## PRIVATE — not in this repo; load from Google Drive
 
@@ -95,9 +93,9 @@ These load from Google Drive, not this repo. **Drive files are still version-suf
 (Drive cannot edit in place) — always search Drive for the highest-numbered version
 rather than assuming a filename. The private set is exactly:
 
-- **copy-review** — Reviews the product's own interface copy against its specific coaching voice. Trigger: "copy review".
-- **database-review** — Dedicated operational database audit against the live production database. Trigger: "database review".
-- **board-of-directors profile** — the personal board profile (`board-of-directors-default-profile-*.md`) that the public `board-of-directors` skill loads. The SKILL is in this repo; the PROFILE is private and lives only in Drive.
+- **copy-review** — Reviews product-specific interface copy. Private: it is written against one product's voice and names a real person. Trigger: "copy review".
+- **database-review** — Operational database audit against a live production database. Private: saturated with live operational internals. The generic half is covered by the public database-hygiene. Trigger: "database review".
+- **board-of-directors** — the skill AND its profile (`board-of-directors-default-profile-*.md`). Both private. The skill was public until 2026-07-15, when it turned out to hardcode a roster of real, named people and a domain taxonomy calibrated to one person's circumstances — the profile was never the only sensitive half.
 
 ## When to run each review
 
@@ -105,7 +103,7 @@ rather than assuming a filename. The private set is exactly:
 - architecture-review: quarterly, or before a major new feature
 - ux-review + mobile-ux: before any public-facing release
 - flow-test: before releasing any new feature — also run alongside holistic-code-audit discipline 6 for the full integration-seam treatment
-- production-drift: after every major sprint, before VPS migration
+- production-drift: after every major sprint, and before any hosting migration
 - skill-library-audit: after every major sprint, or when a production failure reveals a skill gap
 - session-cold-start: at the beginning of every session
 - hermes-upload: at the end of every session

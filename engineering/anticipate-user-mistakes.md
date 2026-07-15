@@ -23,7 +23,7 @@ well-intentioned human doing the most natural thing in the world:
    with scrolling text. To anyone who hasn't seen a command line before,
    this looks exactly like "something has gone wrong" — the natural,
    reasonable response is to close it. Doing so silently killed the entire
-   watch-for-TikFinity process, with no way to restart it short of a full
+   watcher process, with no way to restart it short of a full
    logout and login.
 2. The coaching popup window, once live, had no indication that closing it
    does anything more than close a window. A streamer closing it the way

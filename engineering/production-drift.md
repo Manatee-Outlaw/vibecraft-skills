@@ -120,8 +120,8 @@ Scripts called by cron that are missing the execute bit:
 
 ```bash
 # For each script in crontab, check if it's executable
-# Example: run_reports.sh, backup.py, score_snapshot.py, bridge_heartbeat.py
-stat -c "%a %n" run_reports.sh backup.py score_snapshot.py bridge_heartbeat.py 2>/dev/null
+# Example: <scheduled-script>.sh, <scheduled-script>.py
+stat -c "%a %n" <scheduled-script>.sh <scheduled-script>.py 2>/dev/null
 ```
 
 Flag:
@@ -294,7 +294,7 @@ Ordered list of actions to bring production back in sync with git,
 and to document anything that should be tracked but isn't.
 
 ### EXPANDING TO OTHER ENVIRONMENTS
-When this project migrates from Pi to cloud hosting, re-run this audit
+When a project migrates from one host to another, re-run this audit
 with the following adjustments:
 - Replace crontab check with cloud scheduler (AWS EventBridge, GCP Cloud
   Scheduler, etc.)

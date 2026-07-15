@@ -53,8 +53,8 @@ Use the **exact title of the current Claude chat conversation** as the file name
 - Do NOT paraphrase or shorten the chat title.
 - The chat title is the canonical identifier for this conversation's handoff series.
 - Examples of correct usage:
-  - Chat titled "StreamerOS Development Build 1.4" → use `StreamerOS Development Build 1.4`
-  - Chat titled "Talent Agency CRM Workflow" → use `Talent Agency CRM Workflow`
+  - Chat titled "Payments API Refactor" → use `Payments API Refactor`
+  - Chat titled "Q3 Analytics Dashboard" → use `Q3 Analytics Dashboard`
 - If you are uncertain of the exact chat title, ask the user before proceeding.
 
 This ensures that all handoffs from the same chat session share a consistent naming series
@@ -71,7 +71,8 @@ Search Google Drive for a folder named exactly **Hermes Handoffs**.
   - name: `Hermes Handoffs`
   - mimeType: `application/vnd.google-apps.folder`
 
-For VibeCraft projects: Hermes Handoffs folder ID is <drive-folder-id>
+If a Hermes Handoffs folder ID is already configured for this project, use it
+directly instead of searching: <drive-folder-id>
 
 ---
 
@@ -89,7 +90,7 @@ Search the Hermes Handoffs folder for files whose names begin with the exact cha
 Create a new plain text file in the Hermes Handoffs folder:
 
 - **Filename**: `[Chat Name] v[N]`
-  - Example: `StreamerOS Development Build 1.4 v3`
+  - Example: `Payments API Refactor v3`
 - **Content**: the handoff document from Step 1
 - **Format**: plain text
 - **Important**: set `disableConversionToGoogleType: true` to prevent Drive from

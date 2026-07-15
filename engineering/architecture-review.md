@@ -1,7 +1,7 @@
 ---
 name: architecture-review
 description: >
-  Run a structural architecture review of the VibeCraft codebase via Claude Code.
+  Run a structural architecture review of your codebase via Claude Code.
   Finds async/sync mismatches, duplicated logic, god functions, missing abstractions,
   coupling problems, and single points of failure. Different from engineering-review
   (which finds bugs) — this finds structural problems before they compound. Different
@@ -32,7 +32,7 @@ not individual bugs. Run quarterly or before major feature builds.
 Use bash_tool to write /mnt/user-data/outputs/task.md with this content:
 
 ```
-Perform a structural architecture review of the VibeCraft codebase. Read <server-file>,
+Perform a structural architecture review of this codebase. Read <server-file>,
 <frontend-file>, <report-generator>, <shared-module>, and
 <bot-script> before starting. This is NOT a bug hunt — look for structural patterns
 that cause repeated failures or will limit future development.
@@ -41,7 +41,7 @@ CHECK 1 - Async/Sync Mismatches
 Find every place where synchronous blocking code (database calls, file I/O, HTTP
 requests) runs inside an async function or event loop without using run_in_executor
 or an async library. Flag the file, line, and what the blocking operation is. Note:
-this pattern caused the discord_bot hang and will cause similar issues anywhere else
+this pattern caused the <bot-script> hang and will cause similar issues anywhere else
 it exists.
 
 CHECK 2 - Logic Duplication and Drift
@@ -74,8 +74,8 @@ inconsistent state.
 
 CHECK 7 - Configuration Sprawl
 Find values hardcoded in multiple places that should be a single shared constant.
-Examples: the Pi IP address, token expiry durations, report retention counts, max_tokens
-values for different Claude calls.
+Examples: the <production-host> IP address, token expiry durations, report retention
+counts, max_tokens values for different Claude calls.
 
 CHECK 8 - Error Handling Patterns
 Survey how errors are surfaced to users across the codebase. Are HTTP error responses

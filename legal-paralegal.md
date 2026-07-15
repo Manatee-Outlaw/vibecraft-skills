@@ -4,7 +4,7 @@ description: >
   US paralegal skill for drafting, reviewing, and structuring legal documents —
   TOS, NDAs, service agreements, privacy notices, and data retention policies.
   Drawn from anthropics/claude-for-legal (Apache 2.0) and adapted for
-  creator-services and small-agency contexts. All output is DRAFT work product
+  small to mid-size US business contexts. All output is DRAFT work product
   for attorney review before reliance or distribution.
 sources:
   - https://github.com/anthropics/claude-for-legal (Apache 2.0, copyright 2026 Anthropic PBC)
@@ -24,7 +24,7 @@ before it is signed, distributed, or relied upon.
 
 This skill is calibrated for:
 - Small to mid-size US businesses and agencies
-- Creator services, talent management, and digital media
+- Service-based businesses, professional services, and client programs
 - Plain-language drafting that is enforceable without being unnecessarily intimidating
 - California/CCPA-aware data handling by default (most protective US standard)
 
@@ -45,8 +45,8 @@ return/destruction of information, remedies, governing law.
 
 ### 3. Combined TOS + NDA / Program Participation Agreement
 For programs where users are both receiving a service AND agreeing to
-keep the agency's methods confidential. Most common in talent agencies,
-coaching programs, and proprietary systems. Sections from both above,
+keep the agency's methods confidential. Most common in client programs,
+professional services, and proprietary systems. Sections from both above,
 plus: relationship definition, data collection disclosure, retention policy.
 
 ### 4. Privacy Notice / Data Disclosure
@@ -66,7 +66,7 @@ triggers, security measures.
 Before drafting, confirm:
 - Who are the parties? (company name, user/member description)
 - What is the service or program? (describe in plain terms)
-- What data is collected? (be specific — names, payment info, stream metrics, etc.)
+- What data is collected? (be specific — names, payment info, usage metrics, etc.)
 - What is confidential? (methods, reports, tools, strategies)
 - What jurisdiction governs? (default: state of company's formation/principal office)
 - Is this a one-time signature or a living document with version history?
@@ -153,8 +153,8 @@ yours, (b) you received independently from a third party without restriction, or
 
 ### Data Collection Clause
 "By using the Service, you consent to the collection and use of the following data:
-[list specific data types]. This data is used to deliver coaching reports, track
-program progress, and improve the Service. Data is stored on Agency servers
+[list specific data types]. This data is used to [describe how the Service uses
+the data]. Data is stored on Agency servers
 [encrypted at rest / with reasonable security measures]. For questions about
 your data, contact [email]."
 

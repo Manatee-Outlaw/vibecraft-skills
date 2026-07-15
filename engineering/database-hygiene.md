@@ -20,9 +20,13 @@ last_updated: 2026-05-28
 
 # Database Hygiene Skill
 
-> **Communication note:** The user is a non-technical solo operator. Lead with business
-> consequences, not database theory. Frame every recommendation as: "what breaks if we
-> don't do this" and "what you do once to prevent it forever."
+> **Communication note:** The reader may not be a database specialist. Lead with
+> business consequences, not database theory. Frame every recommendation as: "what
+> breaks if we don't do this" and "what you do once to prevent it forever."
+
+> **On the examples below:** every table and column name here is a generic
+> placeholder (`period_totals`, `entity_id`, `some_table`). Substitute your own. The
+> rules are what transfer; the names are illustration only.
 
 ---
 
@@ -38,23 +42,25 @@ will reject duplicate data, regardless of what the application code does.
 -- (application can crash mid-check, race condition, or have a bug)
 
 -- Good: database enforces uniqueness
-CREATE UNIQUE INDEX idx_snapshots_user_period
-  ON monthly_snapshots(account_id, period_start);
+CREATE UNIQUE INDEX idx_totals_entity_period
+  ON period_totals(entity_id, period_start);
 
 -- Now this INSERT either succeeds or safely fails — no duplicates ever
-INSERT OR IGNORE INTO monthly_snapshots (...) VALUES (...);
+INSERT OR IGNORE INTO period_totals (...) VALUES (...);
 ```
 
 **Rule:** Every table that represents a unique business entity should have a UNIQUE
 constraint on the columns that define that uniqueness. Not just a primary key — a
 semantic unique key that reflects the business logic.
 
-**VibeCraft example:** A backstage snapshot is unique per (streamer + month). The
-database should enforce this, not the import script.
+**Worked example:** if a monthly rollup is unique per (entity + month), then
+`(entity_id, period_start)` is the semantic key. The database should enforce that,
+not the import script. Ask "what combination of columns must never repeat?" — that
+combination is your UNIQUE constraint.
 
-**Important for SQLite 3.15.2:** Do NOT use `ON CONFLICT DO UPDATE` syntax — it
-requires a newer SQLite version. Use `INSERT OR IGNORE` followed by `UPDATE WHERE`
-instead.
+**If you are pinned to an older SQLite:** `ON CONFLICT DO UPDATE` (true upsert) only
+arrived in SQLite 3.24. On anything older, use `INSERT OR IGNORE` followed by
+`UPDATE ... WHERE` instead. Check your runtime's version before relying on upsert.
 
 ---
 
@@ -70,25 +76,26 @@ twice by mistake.
 -- Pattern A: INSERT OR IGNORE
 -- If a record with that unique key already exists, do nothing.
 -- Use when: new data should never overwrite old data for the same key.
-INSERT OR IGNORE INTO monthly_snapshots (account_id, period_start, usd_estimated, ...)
+INSERT OR IGNORE INTO period_totals (entity_id, period_start, amount, ...)
 VALUES (?, ?, ?, ...);
 
 -- Pattern B: INSERT OR REPLACE
 -- If a record with that unique key exists, delete it and insert the new one.
 -- Use when: newer data should always win for the same key.
-INSERT OR REPLACE INTO monthly_snapshots (account_id, period_start, usd_estimated, ...)
+INSERT OR REPLACE INTO period_totals (entity_id, period_start, amount, ...)
 VALUES (?, ?, ?, ...);
 
--- Pattern C: INSERT OR IGNORE + UPDATE (for SQLite 3.15.2)
+-- Pattern C: INSERT OR IGNORE + UPDATE (for SQLite older than 3.24)
 -- Insert if new; update specific columns if exists.
 -- Use when: you want to update some fields but preserve others (e.g. preserve created_at).
-INSERT OR IGNORE INTO table (col1, col2, col3) VALUES (?, ?, ?);
-UPDATE table SET col2 = ?, col3 = ? WHERE col1 = ? AND (col2 != ? OR col3 != ?);
+INSERT OR IGNORE INTO some_table (col1, col2, col3) VALUES (?, ?, ?);
+UPDATE some_table SET col2 = ?, col3 = ? WHERE col1 = ? AND (col2 != ? OR col3 != ?);
 ```
 
 **Which pattern to use:**
-- Historical financial data (Backstage): Pattern B or C — update the numbers if re-imported
-- Session data (stream events): Pattern A — never overwrite live data
+- Restatable historical data (figures that can be revised): Pattern B or C — update the
+  numbers if re-imported
+- Append-only event data: Pattern A — never overwrite what already landed
 - Configuration/settings: Pattern B — latest always wins
 
 ---
@@ -102,37 +109,40 @@ for which source wins and how to track where data came from.
 
 ```sql
 -- Add to tables that will receive data from multiple sources
-ALTER TABLE monthly_snapshots ADD COLUMN data_source TEXT DEFAULT 'backstage_import';
-ALTER TABLE monthly_snapshots ADD COLUMN source_priority INTEGER DEFAULT 10;
--- Higher priority = more authoritative (TikTok official API > manual Backstage import)
+ALTER TABLE period_totals ADD COLUMN data_source TEXT DEFAULT 'bulk_import';
+ALTER TABLE period_totals ADD COLUMN source_priority INTEGER DEFAULT 10;
+-- Higher priority = more authoritative (an official API beats a manual import)
 ```
 
-**Source priority scale (VibeCraft context):**
-- 100: Official platform API (TikTok, Twitch) — ground truth
-- 50:  Platform dashboard exports (Backstage Excel) — reliable but manual
-- 10:  Bridge plugin data — real-time but approximate
+**Source priority scale — rank your own sources by how authoritative they are:**
+- 100: Official upstream API — ground truth
+- 50:  Bulk export from a dashboard — reliable but manual
+- 10:  Real-time agent or plugin data — timely but approximate
 - 1:   Manual user entry — least authoritative
 
-**Simpler approach (for VibeCraft current scale):**
-Use a single UNIQUE constraint per (user, period) and INSERT OR REPLACE. When the
-official TikTok API eventually provides the same data, the higher-quality import
-replaces the Backstage estimate. Add `data_source` as metadata but don't over-engineer
-the query.
+The numbers matter less than the ordering. The point is to decide, once and explicitly,
+which source wins a conflict — rather than letting whichever import ran last decide.
+
+**Simpler approach (usually the right one at small scale):**
+Use a single UNIQUE constraint per (entity, period) and INSERT OR REPLACE. When a
+higher-quality source eventually provides the same data, its import replaces the
+earlier estimate. Add `data_source` as metadata but don't over-engineer the query
+until you actually have a conflict to resolve.
 
 ---
 
 ### 4. Data Retention and Ghost Data Prevention
 
 **Ghost data:** Records that exist in the database but no longer have a valid parent.
-Example: a backstage snapshot for a TikTok handle that has been unlinked and no longer
-has an active user.
+Example: a rollup row for an external account that has since been unlinked and no
+longer has an owner.
 
 **Prevention — three patterns:**
 
 ```sql
 -- Pattern A: Foreign key constraints (cascade delete)
--- When a user is deleted, delete their data automatically
-CREATE TABLE monthly_snapshots (
+-- When a parent is deleted, delete its children automatically
+CREATE TABLE period_totals (
     id              INTEGER PRIMARY KEY,
     user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     ...
@@ -145,18 +155,23 @@ ALTER TABLE users ADD COLUMN deleted_at TEXT DEFAULT NULL;
 
 -- Pattern C: Periodic cleanup job
 -- Scheduled task that finds and removes orphaned records
-DELETE FROM monthly_snapshots
-WHERE account_id NOT IN (
-    SELECT account_id FROM account_handles WHERE user_id IS NOT NULL
+DELETE FROM period_totals
+WHERE entity_id NOT IN (
+    SELECT entity_id FROM entity_links WHERE user_id IS NOT NULL
 );
 ```
 
-**Retention policy for each table type:**
-- User-generated content (check-ins, reports): keep indefinitely — this is the history
-- Session events: keep indefinitely — needed for trend analysis
-- sample_rows: purge after 90 days (a scheduled cleanup job, Sun 04:00)
-- response_rows: purge after 180 days (a scheduled cleanup job, Sun 04:00)
-- Draft/temp records: clear on session end or after 7 days
+**Every table needs a retention decision — make it explicit rather than defaulting to
+"keep everything forever by accident".** A rough shape:
+- User-generated content (submissions, reports): usually keep indefinitely — it's the history
+- Domain events: usually keep indefinitely — needed for trend analysis
+- High-volume raw samples: purge on a schedule (e.g. after 90 days) — these are the
+  tables that quietly become the largest thing in the database
+- Bulky raw responses: purge on a schedule (e.g. after 180 days)
+- Draft/temp records: clear on session end, or after a few days
+
+Pick the windows that fit your data and write them down. The failure mode is not
+choosing a wrong number — it is never choosing at all.
 
 ---
 
@@ -168,7 +183,7 @@ SQLite does NOT enforce foreign key constraints by default. You must enable them
 connection:
 
 ```python
-# In get_db() — add this immediately after opening the connection
+# In your get-connection helper — immediately after opening the connection
 conn.execute("PRAGMA foreign_keys = ON")
 ```
 
@@ -181,50 +196,52 @@ conn.execute("PRAGMA journal_mode = WAL")
 conn.execute("PRAGMA synchronous = NORMAL")
 ```
 
-Already done in VibeCraft. Prevents corruption when multiple connections write
-simultaneously.
+Prevents corruption when multiple connections write simultaneously. Set it once, at
+startup, on every connection.
 
 ### Use CHECK Constraints for Data Validation
 
 ```sql
 -- Reject obviously wrong data at the schema level
-CREATE TABLE monthly_snapshots (
-    usd_estimated   REAL CHECK (usd_estimated >= 0),
-    live_streams    INTEGER CHECK (live_streams >= 0),
-    tier_status     TEXT CHECK (tier_status IN ('Bronze','Silver','Gold','Diamond',
-                                                 'Not maintained', NULL)),
+CREATE TABLE period_totals (
+    amount          REAL CHECK (amount >= 0),
+    event_count     INTEGER CHECK (event_count >= 0),
+    status          TEXT CHECK (status IN ('active','paused','archived', NULL)),
     ...
 );
 ```
+
+A CHECK constraint is the cheapest possible guard against a whole class of bad data:
+it makes the impossible value literally impossible to store.
 
 ---
 
 ## Deduplication Audit — Finding Existing Duplicates
 
-Run these queries on the VibeCraft database to identify current hygiene problems:
+Run these against your database to identify current hygiene problems:
 
 ```sql
--- Find duplicate backstage snapshots (same user, same period_start)
-SELECT account_id, period_start, COUNT(*) as cnt
-FROM monthly_snapshots
-GROUP BY account_id, period_start
+-- Find duplicate rollups (same entity, same period_start)
+SELECT entity_id, period_start, COUNT(*) as cnt
+FROM period_totals
+GROUP BY entity_id, period_start
 HAVING cnt > 1;
 
--- Find orphaned backstage snapshots (handle unlinked but snapshots remain)
-SELECT s.account_id, COUNT(*) as snapshot_count
-FROM monthly_snapshots s
-LEFT JOIN account_handles h ON h.account_id = s.account_id
-WHERE h.account_id IS NULL
-GROUP BY s.account_id;
+-- Find orphaned rollups (parent unlinked but rows remain)
+SELECT t.entity_id, COUNT(*) as row_count
+FROM period_totals t
+LEFT JOIN entity_links e ON e.entity_id = t.entity_id
+WHERE e.entity_id IS NULL
+GROUP BY t.entity_id;
 
 -- Find users with no profile row (ghost accounts)
 SELECT u.id, u.name, u.role, u.created_at
 FROM users u
 LEFT JOIN profiles p ON p.user_id = u.id
-WHERE p.user_id IS NULL AND u.role = 'streamer';
+WHERE p.user_id IS NULL AND u.role = 'member';
 
--- Find orphaned prospect_records (created but never activated, older than 30 days)
-SELECT COUNT(*) FROM prospect_records
+-- Find pending records created but never activated, older than 30 days
+SELECT COUNT(*) FROM pending_records
 WHERE user_id IS NULL
 AND created_at < datetime('now', '-30 days');
 ```

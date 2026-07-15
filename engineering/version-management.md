@@ -22,7 +22,7 @@ the bump. Silent version drift causes real bugs.
 ## Why this matters
 
 Projects often have more than one version number. Examples:
-- A plugin version (what VMSC/the client sees)
+- A plugin version (what the `<host-app>`/the client sees)
 - A bridge/script version (what the installer reports)
 - A manifest version (what the host app displays in its UI)
 - An API version in a changelog or reference document

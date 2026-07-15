@@ -45,7 +45,7 @@ Search the Hermes Handoffs folder for files matching the current chat title.
 Sort by creation date descending. Download and read the most recent version.
 
 The Hermes Handoffs folder ID is in the Project Brief (or use the default:
-<drive-folder-id> for VibeCraft projects).
+<drive-folder-id> configured for your projects).
 
 The handoff gives you:
 - Exact current HEAD commit and branch
@@ -81,7 +81,7 @@ Report which bundles are active and how many skills are available.
 
 ## Step 4 — Check production state (code projects only)
 
-If this is a code project with a Pi or server:
+If this is a code project with a deployment host:
 
 Run a quick state check:
 ```bash
@@ -93,7 +93,7 @@ Report:
 - Working tree state (should be clean)
 - Service status (should be active)
 
-Flag any mismatch between Hermes handoff HEAD and actual Pi HEAD. This means
+Flag any mismatch between Hermes handoff HEAD and the actual deployed HEAD. This means
 something was deployed or changed outside of a tracked session.
 
 For non-code projects: skip this step.
@@ -129,7 +129,7 @@ Skills loaded: [N skills across X bundles]
 Ready to work.
 ```
 
-If any step failed (handoff not found, Pi unreachable, etc.), report what
+If any step failed (handoff not found, host unreachable, etc.), report what
 loaded successfully and what was missing. Partial context is better than none.
 
 ---
@@ -147,11 +147,11 @@ If found, surface them before the session begins — not buried in the brief.
 
 ## Notes on project portability
 
-This skill works on any project, not just VibeCraft. To adapt:
+This skill works on any project, not just the one it was written for. To adapt:
 - The Project Brief file name follows the pattern: "[Project Name] Project Brief.md"
 - The Hermes Handoffs folder ID comes from the Project Brief
 - The git check command adapts to whatever server the project uses
-- If no server/Pi exists, skip Step 4 entirely
+- If no deployment host exists, skip Step 4 entirely
 
 The skill finds the Project Brief first, then uses the folder IDs from it.
 This makes the skill self-configuring for any project that has a Project Brief.

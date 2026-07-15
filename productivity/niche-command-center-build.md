@@ -86,7 +86,7 @@ Before ending the interview, confirm you have answers for all of these:
 - [ ] All data modules (what sections exist)
 - [ ] Data entry method for each module (manual entry, copy-paste from platform, auto-calculated)
 - [ ] Update frequency per module
-- [ ] Streamer/client/contact roster (if applicable) — fields needed
+- [ ] Client/contact roster (if applicable) — fields needed
 - [ ] Personal tracking requirements (yes/no and what)
 - [ ] Any data that already exists elsewhere (reports, exports) that needs to be mirrored
 

@@ -29,10 +29,10 @@ Read every Flask route (or equivalent) in the application. For each route:
 
 Auth decorators to look for:
 - @require_auth (Bearer JWT)
-- @require_manager
+- @require_admin
 - @require_session_auth
-- @require_scout
-- <scoped-token> (?token= param or X-Overlay-Token header)
+- @require_<role> (any further role-scoped decorators)
+- <scoped-token> (?token= param or a custom token header)
 - No decorator (public)
 
 Flag:
@@ -132,8 +132,10 @@ Check every route that reads from or writes to the filesystem:
 - Does the route validate that the resolved path is within an allowed
   directory?
 - Are file uploads (if any) validated for type and size?
-- Does the chat-log API endpoint sanitize the username and date
-  parameters before using them in glob patterns?
+- Does any endpoint that interpolates user input into a filesystem glob
+  or path sanitize those parameters before they reach the pattern?
+  (Wildcards and separators in user input can widen a glob far beyond
+  the intended directory)
 
 ---
 

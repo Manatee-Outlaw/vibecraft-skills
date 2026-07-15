@@ -16,11 +16,11 @@ description: >
 ## Why Step 0 exists (read this first)
 
 On July 1, 2026, a plugin silently failed to deliver any event, for any
-user, ever. The code had a comment claiming "VMSC docs incorrectly
+user, ever. The code had a comment claiming "<host-app> docs incorrectly
 documented it as context.events — context.eventBus is the real API
 (confirmed via diagnostic)." That comment was wrong. It was a past
 assumption, never re-checked, treated as settled fact. The real, current
-vendor documentation (three separate official VMSC docs) consistently
+vendor documentation (three separate official <host-app> docs) consistently
 showed the opposite. The bug went undetected through multiple audits
 because nobody re-opened the actual documentation — they trusted an old
 in-code claim about what the documentation said.
@@ -48,10 +48,10 @@ Before comparing any code to "the docs," confirm you are actually looking
 at the vendor's real, current documentation — not a summary, not a memory,
 not a comment in the codebase claiming to describe it.
 
-- Locate the actual documentation files or pages. For VibeCraft, check
- project knowledge / project files for vendor PDFs (e.g. VMSC_*.pdf) —
- these may exist in project files even when they are not present in the
- git repository. Check both locations; do not assume "not in the repo"
+- Locate the actual documentation files or pages. Check project knowledge
+ and project files for vendor PDFs and spec documents — these may exist
+ alongside the project even when they are not present in the git
+ repository. Check both locations; do not assume "not in the repo"
  means "not available."
 - If genuine, current, authoritative documentation cannot be located
  anywhere: STOP. Do not proceed by falling back on code comments, prior
@@ -116,7 +116,7 @@ Look for:
 - Field or method names we read/call that don't exist in the current docs
  (we might be reading the wrong field, or binding to the wrong object,
  and getting undefined/null or silent no-ops — this is exactly the shape
- of the July 1 VMSC bug: activate() succeeded, version-checked
+ of the July 1 <host-app> bug: activate() succeeded, version-checked
  successfully, and self-updated successfully, while the one specific
  property access it relied on was wrong the entire time)
 - Fields in the docs we aren't reading (data we're discarding that could
@@ -150,8 +150,8 @@ Rate each gap:
 
 ## Step 5 — Version and compatibility check
 
-- What version of each SDK/library is installed (check requirements.txt
- and pip list on the Pi)?
+- What version of each SDK/library is installed (check the dependency
+ manifest and the installed package list on <production-host>)?
 - What version does the vendor currently recommend?
 - Are there deprecation warnings in any vendor docs that affect our usage?
 - Does our integration depend on any beta or undocumented features?
@@ -161,27 +161,45 @@ Rate each gap:
 
 ## Step 6 — Auto-update mechanism audit
 
-For any integration that auto-updates itself:
+For any integration that auto-updates itself, walk this checklist once per
+self-updating component:
 
-VMSC Plugin auto-update:
-- Does checkForUpdates() call <version-endpoint> correctly?
-- On mismatch, does autoUpdate() fetch from <source-endpoint>?
-- Does it write BOTH index.js (__filename) AND manifest.json?
- (manifest.json must update for VMSC to display correct version)
-- Does it guard the payload (must contain plugin header before overwriting)?
-- On success, does it log the restart prompt correctly?
+Version check:
+- Does the update check call <version-endpoint> correctly, and compare the
+ returned version against the right local value?
+- Is the comparison type-correct (string vs semver vs integer), and does it
+ handle the endpoint being unreachable rather than assuming "up to date"?
 
-TikFinity Bridge auto-update:
-- Does the launcher script call <version-endpoint> and compare correctly?
-- Does it download from <download-endpoint> on mismatch?
-- Does it update version.txt after downloading?
-- Does <download-endpoint> stamp CLIENT_VERSION (not MODULE_VERSION)?
- (fixed in <commit> — verify still correct)
-- Does the auto-update path itself have any silent-failure modes? Static
- installer/launcher files (the installer and launcher scripts, and any "manual
- start" variants) do NOT auto-update the same way the bridge script does
- — confirm what does and doesn't self-update, and confirm this is
- documented accurately for anyone troubleshooting a stale install
+Fetch and write:
+- On mismatch, does it fetch from <source-endpoint> and write every file
+ the update touches — not just the executable one? Where a component has a
+ separate metadata/manifest file that declares its version, that file must
+ be written too, or the host will keep displaying the old version even
+ though the code updated.
+- Does it guard the payload before overwriting (e.g. verify the download is
+ well-formed and carries the expected header/signature)? An unguarded
+ overwrite turns a truncated download into a broken install.
+- Does it record the new version locally after a successful download, so
+ the next check compares against reality?
+
+Version stamping:
+- If a build or download step stamps a version into the artifact, is it
+ stamping the constant that component actually reports
+ (<client-version-constant> vs <module-version-constant>)? Stamping the
+ wrong constant produces a component that updates forever, because the
+ version it reports never changes.
+
+Silent-failure modes:
+- Does the auto-update path itself have any silent-failure modes?
+- Which files are genuinely covered by auto-update, and which are static?
+ Installer and launcher scripts, and any "manual start" variants, typically
+ do NOT self-update the way the main script does — confirm what does and
+ doesn't self-update, and confirm this is documented accurately for anyone
+ troubleshooting a stale install.
+
+Rollout:
+- On success, does it log or surface the restart prompt correctly? An update
+ that lands but never restarts is not rolled out.
 
 ---
 

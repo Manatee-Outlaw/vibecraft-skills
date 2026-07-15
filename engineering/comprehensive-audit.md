@@ -45,8 +45,8 @@ move them back out into the task author's hands.
 2. **holistic-code-audit** — logic, failure modes, security, race conditions, edge cases
 3. **architecture-review** — async/sync mismatches, god functions, coupling, SPOF
 4. **security-audit** — route auth inventory, injection, XSS, credentials, rate limits
-5. **external-integration-audit** — VMSC/TikFinity/vendor field names, event coverage
-6. **production-drift** — git vs Pi sync, execute permissions, cron, env vars
+5. **external-integration-audit** — `<host-app>`/`<streaming-tool>`/vendor field names, event coverage
+6. **production-drift** — git vs `<production-host>` sync, execute permissions, cron, env vars
 7. **flow-test** — end-to-end user journeys, integration seams, silent failures
 8. **database-hygiene** — UNIQUE constraints, idempotency, retention policies, orphans
 9. **anticipate-user-mistakes** — innocent actions with disproportionate consequences
@@ -126,12 +126,12 @@ mention of it.
 Ask the user two quick questions:
 1. "Are there specific areas of concern from this session I should emphasize?"
    (Recent builds, known risky changes, anything that felt shaky)
-2. "Should I include Pi checks that require SSH access?"
+2. "Should I include `<production-host>` checks that require SSH access?"
    (Yes for production audits; No for offline/local-only audits)
 
 If the user says "just run it" or similar, use defaults:
 - Include all skills with full scope
-- Include Pi SSH checks
+- Include `<production-host>` SSH checks
 
 ---
 
@@ -157,7 +157,7 @@ Before spawning any subagents, read all major project files completely:
 - All standalone scripts (<bot-script>, <report-generator>, etc.)
 - SCHEMA.md and CLAUDE.md
 - Any shell scripts called by cron
-- Bridge/installer batch files if present
+- `<bridge-component>`/installer batch files if present
 - **At least one REAL, RECENT output artifact the system produced for a
   human** — a generated report, an exported PDF, a sent email, a rendered
   overlay, a delivered file. Not the template. Not the generator code. Not

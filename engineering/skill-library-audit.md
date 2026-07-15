@@ -255,7 +255,7 @@ When auditing:
 
 ## Notes on the execute permission gap (real example)
 
-In June 2026, a production failure revealed that run_reports.sh had
+In June 2026, a production failure revealed that a `<scheduled-script>` had
 mode 100644 (non-executable) in git. Cron fired on schedule, got
 "Permission denied", wrote nothing to logs, and no alert fired.
 12 days of silent report failures. The production-drift skill existed

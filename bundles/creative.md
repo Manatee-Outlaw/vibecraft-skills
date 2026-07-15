@@ -5,8 +5,10 @@
 # Drive could not edit files in place, and suffixed filenames break the raw URLs that
 # project instructions point at.
 # Last substantive change: 2026-07-14 — de-versioned the library (dropped -vN.N
-# suffixes). NOTE: the board-of-directors SKILL is public here, but the personal board
-# PROFILE it loads is PRIVATE and lives only in Google Drive.
+# suffixes).
+# Last substantive change: 2026-07-15 — board-of-directors moved OUT of this repo
+# entirely (skill AND profile are now private): the skill published a roster of real
+# people and a personal domain taxonomy. Load it from the private store, not here.
 
 Load these skills for visual design, generative art, and themed output.
 
@@ -20,7 +22,6 @@ Load these skills for visual design, generative art, and themed output.
 6. engineering/no-assumed-memory.md
 7. engineering/propagate-the-lesson.md
 8. engineering/close-known-gaps.md
-9. productivity/board-of-directors.md
 
 ## What each skill does
 
@@ -32,14 +33,12 @@ Load these skills for visual design, generative art, and themed output.
 - **no-assumed-memory** — Never assume a fresh session shares memory with a different conversation. Always-on whenever work crosses a session boundary.
 - **propagate-the-lesson** — Whenever a genuinely general-purpose lesson or fix is identified, check every bundle for the same applicability. Now also explicitly checks whether a new skill needs registering in comprehensive-audit's own lists, not just added to a bundle. Always-on.
 - **close-known-gaps** — Once a real, known issue has been surfaced, the default is to fix it now rather than narrowing scope. Always-on.
-- **board-of-directors** — Convenes the user's personal Board of Directors. Say "convene my board" at any point.
 
 ## How to trigger each skill
 
 - "Create a poster / visual / cover / design" → canvas-design
 - "Make generative art / algorithmic art / animated visuals" → algorithmic-art
 - "Apply a theme to this / make this look consistent" → theme-factory
-- "Convene my board" → board-of-directors
 - verify-before-versioning, trust-the-live-signal, no-assumed-memory, propagate-the-lesson, and close-known-gaps trigger automatically.
 
 ## Note on this update

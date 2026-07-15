@@ -1,7 +1,7 @@
 ---
 name: engineering-review
 description: >
-  Run a full 8-check engineering audit of the VibeCraft codebase via Claude Code.
+  Run a full 8-check engineering audit of your codebase via Claude Code.
   Catches database association errors, undefined variables, token limits, silent
   failures, auth gaps, missing routes, dead code, and git hygiene issues. Trigger
   immediately when the user says "engineering review", "code audit", "run audit",

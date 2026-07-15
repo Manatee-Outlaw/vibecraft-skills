@@ -1,11 +1,11 @@
 ---
 name: ux-review
 description: >
-  Heuristic evaluation of the StreamerOS interface. Checks whether the UI
+  Heuristic evaluation of the product's interface. Checks whether the UI
   follows established UX principles: system status visibility, error prevention,
   consistency, user control, helpful error messages, empty states, and loading
-  feedback. Also checks StreamerOS-specific concerns: coaching tone, progress
-  visibility toward the the revenue goal goal, and whether the interface feels
+  feedback. Also checks domain-specific concerns: coaching tone, progress
+  visibility toward the revenue goal, and whether the interface feels
   encouraging vs clinical. Trigger phrases: "UX review", "usability review",
   "heuristic review", "is the UI good", "UI audit", "UX audit", "review the
   interface", "check the user experience".
@@ -20,7 +20,7 @@ last_updated: 2026-06-29
 > "what does this cost the streamer?" — confusion, wasted time, lost trust, or
 > a coaching moment missed.
 
-A heuristic evaluation of the StreamerOS interface against 10 usability
+A heuristic evaluation of the product's interface against 10 usability
 principles, adapted for the coaching platform context. This is not a bug hunt —
 it's a quality-of-experience audit.
 
@@ -47,7 +47,7 @@ Flag any place where the interface goes silent while something is happening.
 Read every label, heading, button, and description in the interface. Check:
 - Does it use streaming/TikTok vocabulary (gifts, diamonds, PCU, gifters) or
   software vocabulary (sessions, data, records)?
-- Does it use VibeCraft's coaching vocabulary (archetypes, playbook, bottleneck)
+- Does it use the product's coaching vocabulary (archetypes, playbook, bottleneck)
   consistently and in a way a new streamer would understand on first read?
 - Are there any terms that appear without explanation that a streamer might not know?
 
@@ -126,7 +126,7 @@ Find every error message, toast notification, and warning. For each:
 - Does it say what the user should do next?
 - Is the tone supportive (coaching) rather than accusatory?
 
-### CHECK 10 — StreamerOS-Specific: Coaching Presence
+### CHECK 10 — Domain Voice: Coaching Presence
 *Does the interface feel like a coaching platform or a dashboard?*
 
 Check:
@@ -148,7 +148,7 @@ Check each of these screens for a brand-new user (no data):
 - Reports section before any reports have been generated
 - Community section with no members visible
 - Check-in history before first check-in submitted
-- History tab before any streams (new empty ▶ Curve state)
+- History tab before any streams (new empty chart state)
 - Manager coaching flags panel when no streamers are flagged
 
 ---

@@ -1,7 +1,7 @@
 ---
 name: mobile-ux
 description: >
-  Reviews the StreamerOS interface specifically for mobile use. Streamers are
+  Reviews the product's interface specifically for mobile use. Streamers are
   frequently on their phones before, during, and after streams — checking
   their dashboard, reading reports, submitting check-ins. This skill checks
   touch targets, text readability, navigation on small screens, scroll
@@ -20,19 +20,19 @@ last_updated: 2026-06-29
 
 Streamers live on their phones. They check their dashboard between streams.
 They read reports while commuting. They submit check-ins from wherever they
-are. The desktop experience of StreamerOS is the test environment — the mobile
+are. The desktop experience is the test environment — the mobile
 experience is where the product actually gets used.
 
 ---
 
-## Context: How Streamers Use StreamerOS on Mobile
+## Context: How Streamers Use the App on Mobile
 
 Before reviewing anything, understand the mobile use cases:
 - **Pre-stream:** checking current goals, reviewing playbook tasks for tonight
 - **Post-stream:** submitting a check-in, quickly seeing if revenue updated
 - **On the go:** reading weekly/monthly reports, checking the diagnostic
-- **Rare on mobile:** the manager view, Backstage data, Discord settings,
-  the coaching overlay (VMSC only — desktop)
+- **Rare on mobile:** the manager view, bulk export data, Discord settings,
+  the coaching overlay (`<host-app>` only — desktop)
 
 The review should weight the pre/post-stream flows most heavily — these are
 where mobile matters most.
@@ -75,15 +75,14 @@ inputs — it's disorienting.)
 *Can a streamer navigate the app comfortably on a phone?*
 
 Check the nav bar:
-- How many tabs are visible? (Dashboard, Roadmap, Diagnose, Playbook,
-  Community, Changelog, Manager) — on a 375px screen, do they all fit?
+- Enumerate the app's top-level tabs — on a 375px screen, do they all fit?
 - Do any tab labels get truncated?
 - Is the active tab clearly distinguishable from inactive ones at small size?
 - Is there a horizontal scroll on the nav that a user might not discover?
 
-Check the Manager tab sub-navigation:
-- The Manager tab has sub-tabs (Team, Check-ins, Reports, Backstage, Agency)
-  — do these work on mobile?
+Check any nested sub-navigation:
+- Where a top-level tab has its own sub-tabs, enumerate them — do these work
+  on mobile?
 
 ### CHECK 4 — Scroll Behaviour
 *Does everything scroll correctly without trapping or losing the user?*
@@ -94,7 +93,7 @@ Check:
 - Are there any modal dialogs or overlays — do they scroll correctly on mobile?
   (The diagnostic flow, the hard-delete confirmation modal)
 - Are there any tables or wide content areas that overflow horizontally
-  without proper handling? (Streamer rosters, Backstage data tables)
+  without proper handling? (Streamer rosters, bulk export data tables)
 - Does the check-in form work on mobile? (Text areas, dropdowns)
 
 ### CHECK 5 — The Core Mobile Flows

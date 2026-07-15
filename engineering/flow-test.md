@@ -28,10 +28,10 @@ Every flow test starts from the user's perspective — not the developer's. The 
 
 ## Key ideas (explained plainly)
 
-- **Flow** — a sequence of steps a user takes to accomplish one goal (e.g., "streamer signs up → completes diagnosis → sees their playbook"). A flow has a clear start, a clear end, and steps in between.
+- **Flow** — a sequence of steps a user takes to accomplish one goal (e.g., "user signs up → completes onboarding → sees their dashboard"). A flow has a clear start, a clear end, and steps in between.
 - **Precondition** — what has to be true before a step can happen (e.g., "user must be logged in"). If the precondition isn't met, the step will fail — sometimes visibly, sometimes silently.
 - **Happy path** — the sequence of steps that works perfectly when everything goes right. This is the path developers test. It is not the path real users take.
-- **Edge case** — an unusual but realistic situation that falls outside the happy path (e.g., user with no diagnosis tries to access the playbook; user submits a form twice; user returns after 30 days).
+- **Edge case** — an unusual but realistic situation that falls outside the happy path (e.g., user with no onboarding data tries to access the dashboard; user submits a form twice; user returns after 30 days).
 - **Silent failure** — a bug that doesn't show an error message. The user thinks something worked, but it didn't. These are the most dangerous bugs because users don't report them.
 - **Dead end** — a place in the flow where a user has nowhere obvious to go next, even though the task isn't finished.
 - **State mismatch** — when what the user sees doesn't match what is actually stored (e.g., the dashboard says "check-in submitted" but the database has no record).
@@ -47,7 +47,7 @@ Every flow test starts from the user's perspective — not the developer's. The 
 **Run this before tracing any individual journeys.** This phase catches the class of bugs that journey tracing alone misses: data that a user enters in one section but another section silently fails to use.
 
 **Step 1: List all major sections of the app.**
-Name each distinct area a user can be in (e.g., onboarding, diagnose, playbook, dashboard, settings). Don't trace flows yet — just name the sections.
+Name each distinct area a user can be in (e.g., onboarding, dashboard, reports, settings). Don't trace flows yet — just name the sections.
 
 **Step 2: For every meaningful piece of user input, trace its full journey.**
 For every piece of data a user enters (an answer, a preference, a setting), ask:
