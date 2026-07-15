@@ -7,10 +7,15 @@ description: >
   tracing individual journeys, to catch cross-component bugs that journey tracing
   alone misses. Use when the user wants to test a feature end-to-end, verify an
   onboarding flow, check that data appears where it should, or confirm that UI
-  paths lead to correct outcomes. Run before releasing any new feature, after any
-  significant codebase change, or when a user reports unexpected behaviour.
+  paths lead to correct outcomes. Also covers reading the real artifact a flow
+  delivers — a generated report, PDF, email, or export — as the recipient reads
+  it, because a document that ends mid-sentence, omits half its content, or leaks
+  internal reasoning is invisible to code review and to "it generated without an
+  error". Run before releasing any new feature, after any significant codebase
+  change, or when a user reports unexpected behaviour.
   Trigger phrases: "test this flow", "walk through the user journey", "check this
-  end-to-end", "flow test".
+  end-to-end", "flow test", "check the actual report", "read a real output",
+  "is the PDF right".
 ---
 
 # Flow Test
@@ -90,6 +95,20 @@ For each flow, ask:
 
 ---
 
+### Phase 3 — Read the actual thing the user receives
+
+If a flow ends in something a person is handed — a generated report, an exported PDF, an email, an overlay, a downloaded file — **open a real one and read it.** Not the template. Not the code that builds it. Not a fresh test render made for the audit. A real, recent artifact that a real user was actually sent.
+
+Read it the way the recipient reads it, start to finish, and ask:
+- Does it end where it's supposed to end, or does it just stop mid-sentence?
+- Are all the parts there? If it promises five sections, count five.
+- Is anything in it the recipient should never see — internal notes, debug output, placeholder text, raw error messages, the system's own reasoning?
+- Does it actually say something useful, or is it shaped correctly and empty?
+
+**"It generated without an error" is not "it is correct."** Reading the code that produces a document cannot tell you the document ends mid-sentence, or that it delivered half of what it promised. Those are only visible in the artifact itself. A person reading two real outputs for ten minutes will find things a full code audit will not.
+
+---
+
 ## Output format
 
 For each issue found:
@@ -112,5 +131,6 @@ End with: **Integration Seam Summary** — which seams are clean, which have gap
 
 - Always run Phase 0 (seam check) before any journey tracing
 - Never skip Phase 2 (silent failures) — these are the ones users don't report
+- If the flow hands the user an artifact, run Phase 3 on a real recent one — never rate an output by whether the generator exited cleanly
 - Frame every finding from the user's perspective, not the developer's
 - After fixes: re-run the affected flows to confirm they're resolved

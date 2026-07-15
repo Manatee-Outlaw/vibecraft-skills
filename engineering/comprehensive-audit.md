@@ -66,7 +66,16 @@ audit" means:
 - **verify-before-claiming**: no finding may be marked fixed, working, or
   resolved based on code review alone. Real execution proof required, or
   explicitly marked code-review-only with the specific reason execution
-  wasn't possible.
+  wasn't possible. This applies to NEGATIVE findings too — "nothing reads
+  this column", "this endpoint has no caller", "this file isn't tracked in
+  git", "no issues found" are all claims, and each needs the same proof as
+  "it's broken". Before reporting that something is missing, unused, or
+  untracked: search for it, and say WHERE you searched. An audit that
+  asserts an absence it never checked is worse than one that stays quiet.
+  And before reporting ALL CLEAR on any check, be able to show the check
+  could have come back dirty — a scan that aborted, a grep with a rejected
+  pattern, or a query that never ran reports "clean" identically to a real
+  pass.
 - **propagate-the-fix**: for any finding that looks like a duplicated
   pattern, search for sibling instances elsewhere in the codebase before
   finalizing — report every instance found, not just the first one.
@@ -88,7 +97,14 @@ audit" means:
   live signal (a live query, a live file, an actual running process)
   versus a stored/documented/assumed value, use the live signal, and note
   explicitly if this changes the answer from what documentation or a
-  stored field would suggest.
+  stored field would suggest. A live signal only answers the question you
+  ask of it. If the live data looks anomalous — a column that is empty, a
+  metric that is uniform, a log with no entries — do NOT explain it away
+  with a plausible story ("from older clients", "hasn't fired yet",
+  "expected for new users"). Test the story: it is a hypothesis, and it is
+  almost always checkable in one query. A rationalisation that turns out
+  to be wrong costs more than the anomaly it dismissed, because it closes
+  the question.
 - **hostile-environment-testing**: any finding touching an installer,
   launcher, or scheduled script must be tested under messy real-world
   conditions, not just reviewed.
@@ -142,6 +158,14 @@ Before spawning any subagents, read all major project files completely:
 - SCHEMA.md and CLAUDE.md
 - Any shell scripts called by cron
 - Bridge/installer batch files if present
+- **At least one REAL, RECENT output artifact the system produced for a
+  human** — a generated report, an exported PDF, a sent email, a rendered
+  overlay, a delivered file. Not the template. Not the generator code. Not
+  a fresh test render. An actual artifact an actual user actually received.
+  Source files cannot tell you that a document ends mid-sentence or that
+  half a framework is missing from it. Pass it to the flow-test subagent.
+  If no real artifact can be obtained, say so explicitly in the report —
+  that is a gap in the audit's coverage, not a detail to omit.
 
 Pass the relevant file contents as context when spawning each subagent.
 Each subagent needs the codebase to do its job.
@@ -166,10 +190,21 @@ of it, not just the skill it's specifically assigned. Each subagent must:
    MEDIUM: [finding] | FILE: [file:line] | FIX: [one-line description]
    LOW: [finding] | FILE: [file:line] | FIX: [one-line description]
    QUICK WIN: [finding] | FILE: [file:line] | FIX: [one-line description]
-   ALL CLEAR: [list every check that passed cleanly]
+   ALL CLEAR: [list every check that passed cleanly — and for each, how
+   you know it could have come back dirty]
 
-4. Never change any files — report only
-5. For ponytail-audit findings: triage as RESOLVED / KEPT AS-IS (with
+4. Rate every finding by what the USER experiences, not by what the code
+   does. "Fails gracefully", "degrades safely", "truncates without
+   crashing", "no parse error" all describe the PROCESS surviving — they
+   say nothing about whether the person on the other end received a
+   working product. Truncating cleanly is graceful for the parser and
+   useless for the reader. Before rating anything LOW because it "fails
+   safely", state in the finding what the user actually receives when it
+   fails. If the answer is "a broken product", it is not LOW. "Can this
+   break?" and "is this doing its job?" are different questions with the
+   same reassuring answer — ask both, and report the second one.
+5. Never change any files — report only
+6. For ponytail-audit findings: triage as RESOLVED / KEPT AS-IS (with
    reasoning) / DEFERRED (with a stated trigger to revisit) — this same
    triage, via close-known-gaps, applies to every finding from every
    subagent, not just ponytail's.

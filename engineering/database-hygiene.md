@@ -3,10 +3,14 @@ name: database-hygiene
 description: >
   Database design and hygiene for SQLite applications. Use when designing schemas,
   writing import/upsert logic, handling multi-source data, preventing duplicates,
-  managing data retention, or auditing for ghost/bad data. Trigger phrases: "duplicate
-  data", "single record of truth", "database hygiene", "upsert", "idempotent import",
-  "data source conflict", "schema constraints", "ghost data", "orphaned records",
-  "data retention", "clean the database".
+  managing data retention, or auditing for ghost/bad data. Also covers the arrival
+  audit — whether data is actually landing in a column at all, rather than only
+  whether its absence can break something. An empty or uniform column is a finding,
+  and a write-only column nothing reads has no consumer to notice it broke.
+  Trigger phrases: "duplicate data", "single record of truth", "database hygiene",
+  "upsert", "idempotent import", "data source conflict", "schema constraints", "ghost
+  data", "orphaned records", "data retention", "clean the database", "empty column",
+  "no data arriving", "telemetry isn't populating", "is this field being written".
 sources:
   - SQLite best practices (sqliteforum.com, 2025)
   - Idempotency patterns in SQL (dev.to, 2026)
@@ -227,6 +231,59 @@ AND created_at < datetime('now', '-30 days');
 
 ---
 
+## Arrival Audit — Is Anything Actually Landing?
+
+A column can be perfectly designed, perfectly constrained, and completely empty.
+Hygiene is not only "is this data correct" — it is "is this data HERE at all".
+
+**The trap:** asking whether a column's emptiness can BREAK anything, correctly
+answering "no", and moving on. Those are two different questions:
+
+- *"Can NULLs in this column cause an error?"* — a question about harm.
+- *"Should these be NULL?"* — a question about whether the thing works.
+
+A column can be completely harmless and completely broken at the same time. If it
+was added to answer a question, and it is empty, the question is still unanswered
+and nobody has found out.
+
+**Write-only columns are the highest risk, not the lowest.** A column that
+something writes but nothing reads has no consumer to notice when it stops
+arriving. "Nothing reads it yet — it's forward telemetry for later" is not a
+reason to skip it. It is the exact reason it can sit broken for months. That
+doesn't automatically make it a HIGH finding — but it does mean it MUST be
+checked, because nothing else in the system will.
+
+```sql
+-- For any column a live source is supposed to populate:
+-- how many rows actually have a value?
+SELECT COUNT(*)                        AS total_rows,
+       COUNT(some_column)              AS rows_with_value,
+       COUNT(*) - COUNT(some_column)   AS rows_null
+FROM some_table;
+
+-- Is it uniform? A column where every row holds the same value is often
+-- a default that nothing ever overwrote.
+SELECT some_column, COUNT(*) FROM some_table GROUP BY some_column;
+
+-- Is it arriving NOW, or did it stop? Compare recent rows against old ones.
+SELECT COUNT(*)               AS recent_rows,
+       COUNT(some_column)     AS recent_with_value
+FROM some_table
+WHERE created_at > datetime('now', '-7 days');
+```
+
+**Do not explain an anomaly away — test the story.** "Those NULLs are from older
+clients", "it hasn't fired yet", "that's expected for new users" are hypotheses,
+not findings. Each is usually checkable in one query: if the story is "older
+clients", then NEW rows must have values — so check the new rows. A
+rationalisation that turns out to be wrong costs more than the anomaly it
+dismissed, because it closes the question.
+
+**An empty or uniform column is a FINDING until proven otherwise — not a
+footnote.**
+
+---
+
 ## Migration Pattern — Adding Constraints to Existing Tables
 
 SQLite cannot add a UNIQUE constraint to an existing table directly. The safe migration
@@ -270,5 +327,8 @@ When designing or auditing any table, answer:
 4. **Should deleted parent records delete child records?** → Add `ON DELETE CASCADE` foreign keys
 5. **How long should this data be kept?** → Add retention policy to a scheduled cleanup job
 6. **Are there currently duplicate or orphaned rows?** → Run deduplication audit queries
+7. **Is anything actually arriving in each column?** → Run the arrival audit: count the
+   NULLs, check for a uniform value, compare recent rows against old ones. Empty is a
+   finding, not a footnote — most of all for write-only columns nothing reads back
 
 ---

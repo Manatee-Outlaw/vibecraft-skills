@@ -57,7 +57,7 @@ Load these skills at the start of any software/coding project conversation.
 - **diagnose** — When something is broken, follow a disciplined 6-step process to find and fix it properly rather than guessing.
 - **to-prd** — Turn a conversation into a formal written spec so there is a clear record of what was agreed before work starts.
 - **improve-codebase-architecture** — Periodically survey the codebase for tangles and structural problems before they become expensive bugs.
-- **flow-test** — Walk through the product as a real user would, checking every journey works end-to-end. Now the canonical home for the "integration seam check" technique (data-handoff tracing), also referenced by holistic-code-audit rather than duplicated there.
+- **flow-test** — Walk through the product as a real user would, checking every journey works end-to-end. Now the canonical home for the "integration seam check" technique (data-handoff tracing), also referenced by holistic-code-audit rather than duplicated there. Phase 3 requires opening a real, recent output artifact (report, PDF, email, export) and reading it as the recipient — "it generated without an error" is not "it is correct".
 - **holistic-code-audit** — UPDATED to v1.1. The 8-discipline code audit (runs in chat). Discipline 6 now points to flow-test's Phase 0 for the integration seam check instead of repeating it. Use engineering-review for deeper Claude Code audits.
 - **verify-before-claiming** — Requires real execution proof before any report says "fixed," "working," "deployed," or "verified" — and the same proof before any report says "clean," "no hits," or "all tests passed," because a scan that aborted or never ran reports identically to a real pass. Prove a check can fail before trusting that it didn't. Always-on.
 - **task-authoring** — Governs how task files are written for an implementer. Every task.md opens with an ASSUMPTIONS block (each factual dependency, its source, verified or not); in any domain the author cannot see — code, server, database, target OS — state the GOAL, never the mechanism. The implementer enforces it: no assumptions block, or a mechanism the author couldn't have verified, gets called out and the goal followed instead. Always-on.
@@ -74,7 +74,7 @@ Load these skills at the start of any software/coding project conversation.
 - **push-to-git** — Full deploy in one command. Trigger: "push to git [message]", "deploy", "ship it".
 - **engineering-review** — Full 8-check bug hunt via Claude Code. Trigger: "engineering review", "code audit".
 - **architecture-review** — Deep structural analysis. Trigger: "architecture review".
-- **database-hygiene** — Design principles for SQLite tables and INSERT logic.
+- **database-hygiene** — Design principles for SQLite tables and INSERT logic, plus the arrival audit: whether data is actually landing in a column, not just whether its absence can break anything. Empty or uniform is a finding; write-only columns have no consumer to notice they broke.
 - **ux-review** — Heuristic evaluation of the interface. Trigger: "UX review".
 - **mobile-ux** — Reviews the interface for mobile use. Trigger: "mobile review".
 - **cross-project-audit** — Audits how multiple Claude project chats interact. Trigger: "cross-project audit".
