@@ -15,7 +15,11 @@ description: >
   matched nothing, or never ran produces output identical to a genuine pass.
   Trigger before reporting any clean scan, audit, grep, health check, or test
   result — prove the check could fail (exit code, positive control) before
-  trusting that it didn't.
+  trusting that it didn't. And trigger whenever a command returns nothing, an
+  empty string, or "0": a positive control proves the probe fired, not that it
+  was pointed at the right thing, spelled the right way, on the right machine —
+  print the target and read it back. Some tools fail silently and hand back a
+  plausible empty result rather than crashing.
 ---
 
 # Verify Before Claiming
@@ -89,6 +93,11 @@ still open.
   real pass. Before trusting a negative result, prove the check was live:
   check the exit code, and feed it a positive control it must catch. See
   "The check that cannot fail" below.
+- **The live instrument with the wrong pattern.** A control proves the probe
+  fired; it says nothing about what the probe was pointed at. A scanner
+  searching for full names will pass a file that uses first names, every time,
+  with its canary green. Print the target — the path, the URL, the spelling —
+  and read it back. See "A control proves the instrument runs" below.
 
 ## The check that cannot fail
 A negative result is only meaningful if the check was capable of returning a
@@ -137,6 +146,85 @@ result, ask:
 4. Did the thing I'm reporting on actually EXECUTE, or did I only observe
    that nothing complained? Silence is not success.
 
+## A control proves the instrument runs. It does not prove you measured the right thing.
+
+This is the refinement, and it is the harder half. A positive control answers
+"did my probe fire?" It does not answer "was my probe pointed at the right
+thing, spelled the right way, on the right machine?" A live instrument with the
+wrong pattern returns the same clean zero as a live instrument with the right
+one.
+
+The proof: a credential scan passed the most sensitive file in a library every
+day for a week — **with a planted canary proving the scanner was live each
+time.** The scan list held people's full names. The file used their first names.
+Live scanner. Wrong pattern. Clean zero. The canary was doing its job perfectly
+and guarding nothing.
+
+Five more of the same class, all from one day:
+
+- A history rewrite removed `board-of-directors.md`; the sensitive blob survived
+  as `board-of-directors-v1.1.md`, because an earlier rename had moved it. The
+  check asked "is it gone?" and it was — under that name.
+- An API endpoint returned a 401 error object; `len()` of its three keys read as
+  "3 stars", and nearly triggered a false stop.
+- A probe meant to scan a fresh clone re-scanned the local repo, because a `sed`
+  silently failed on Windows backslashes and left the path hardcoded.
+- A scope check read an empty string as "absent". It happened to be the right
+  answer, from a broken instrument — the most dangerous kind of correct.
+- Two people compared tree hashes and nearly declared a mismatch a finding. One
+  had run `git ls-tree --name-only | sha256sum`, the other `git ls-tree |
+  sha256sum`. Different instrument, same name, different number.
+
+**The countermeasure: print what the probe is actually targeting.** The path, the
+URL, the machine, the spelling, the exact command. Every one of those five was
+caught by that and by nothing else — not by the control, which fired correctly
+in most of them.
+
+So ask, in this order:
+1. Did the probe fire? (the positive control)
+2. **What did it fire AT?** Print the target and read it back. Is that the thing
+   you meant, spelled the way the data actually spells it, in the place the data
+   actually lives?
+3. Would it still have fired if the answer were the other one?
+
+## Two anti-patterns, named literally
+
+These are named as exact strings, not as principles, deliberately. The exit-code
+principle already existed in this skill — and was violated three times in one
+week, once *inside the commit that added it*. A principle did not fire at the
+moment of error. A literal string might.
+
+**Anti-pattern 1 — the exit code of the wrong command:**
+
+```bash
+python script.py; echo "---"; echo "EXIT CODE: $?"     # WRONG: $? is echo's status
+```
+
+This reports `EXIT CODE: 0` while `script.py` is dying. Capture it immediately:
+
+```bash
+python script.py; rc=$?; echo "EXIT CODE: $rc"          # correct
+some_cmd | tail -5; rc=${PIPESTATUS[0]}                 # correct through a pipe
+```
+
+**Anti-pattern 2 — the leading slash on Git Bash:**
+
+```bash
+gh api /user     # WRONG on Git Bash: rewritten to C:/Program Files/Git/user
+gh api user      # correct
+```
+
+MSYS path translation rewrites the leading `/` into a Windows path. The call
+fails, prints nothing, and your parser reads the empty output as a finding —
+"no scopes", "not present", "clean".
+
+**What these two share is the reason they are worth naming together: both hand
+back a plausible empty-or-zero result instead of crashing.** That is the whole
+family. A tool that fails loudly is safe — you cannot miss it. These fail
+quietly and hand you a value you have no reason to distrust. Whenever a check
+returns "nothing found", "0", or an empty string, the first question is not
+"what does that mean?" — it is **"did the command actually run?"**
+
 ## Applied to writing code, not just running checks
 The same discipline applies when writing the code itself: any operation whose
 failure is discarded (`>nul 2>&1`, a bare `except:`, an unchecked return
@@ -170,3 +258,7 @@ Never let an unverified claim read the same as a verified one in a report.
 - Before reporting ANY clean/negative result from a scan, audit, or test —
   "found nothing" is a claim like any other and needs the same proof as
   "fixed"
+- Whenever a command returns nothing, "0", or an empty string — ask whether it
+  actually ran before deciding what the emptiness means
+- Whenever a check passes with a green control — ask what it was pointed at,
+  and whether the data spells the thing the way the check spells it

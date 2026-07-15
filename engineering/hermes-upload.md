@@ -1,6 +1,6 @@
 ---
 name: hermes-upload
-description: Generate a structured handoff document from the current conversation and upload it to Google Drive. Trigger immediately when the user says "hermes upload" — do not ask for clarification, proceed through all steps. Creates a versioned plain text file in the "Hermes Handoffs" Drive folder, auto-incrementing the version number (v1, v2, v3, etc.) based on files already in the folder with the same chat name. Also use this skill when the user says "export to hermes", "send to hermes", or "hermes handoff".
+description: Generate a structured handoff document from the current conversation and upload it to Google Drive. Trigger immediately when the user says "hermes upload" — do not ask for clarification, proceed through all steps. Creates a versioned plain text file in the "Hermes Handoffs" Drive folder, auto-incrementing the version number (v1, v2, v3, etc.) based on files already in the folder with the same chat name. Every number in the handoff must carry its provenance — sample or population, measured or estimated, and by whom — because a figure that loses its denominator in a handoff becomes a false statistic in the next session, which has no way to see the qualifier was ever there. Also use this skill when the user says "export to hermes", "send to hermes", or "hermes handoff".
 ---
 
 # Hermes Upload
@@ -42,6 +42,28 @@ Using the full context of this conversation, produce the following document. Wri
 ```
 
 Format: plain text. Actual details, not paragraph summaries.
+
+**Every number in a handoff carries its provenance, or it does not go in.**
+For each figure, the handoff must say: is it a SAMPLE or the POPULATION, was it
+MEASURED or ESTIMATED, and BY WHOM. Write "8 of 8 in a sample of 8 (of ~80
+total), checked by me this session" — never "8 of 8".
+
+This is not pedantry; it is the failure this rule was written for. A session
+sampled 8 items, found 8 clean, and reported it correctly **as a sample**. The
+handoff recorded "8 of 8". The next session read that as the population and told
+the user it was a fact. The real number was 78 of 80. Nobody lied and nothing was
+unverified — the denominator was simply dropped in transit, and a sample became a
+statistic.
+
+The handoff is the one document every cold start treats as authoritative and
+nobody re-derives. That is exactly why it is the worst possible place to lose a
+qualifier: a hedge stripped here is never recovered downstream, because the
+downstream reader has no idea a hedge ever existed. **A figure that arrives
+without its denominator has already lost the thing that made it true.**
+
+If you cannot state a number's provenance, either go and establish it, or write
+the qualifier you do have — "unverified", "estimated", "sampled, denominator
+unknown". An honest hedge survives the handoff. A stripped one does not.
 
 ---
 
@@ -123,3 +145,4 @@ After a successful upload, report:
 - Always run version detection before assigning a number — never assume v1 without checking.
 - Never skip the upload — if something fails, show the document in chat rather than silently failing.
 - The handoff document must be written as if the next session is reading a cold brief with no prior context.
+- Never write a bare number. Every figure carries sample-or-population, measured-or-estimated, and by whom. A denominator dropped in a handoff never comes back — the next reader cannot miss what they cannot see was removed.
