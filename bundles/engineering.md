@@ -4,9 +4,10 @@
 # -vN.N suffix to any file in this repo; that convention existed only because Google
 # Drive could not edit files in place, and suffixed filenames break the raw URLs that
 # project instructions point at.
-# Last substantive change: 2026-07-14 — de-versioned the library (dropped -vN.N
-# suffixes); prepared for the public repo (repo-relative paths; copy-review and
-# database-review moved to the PRIVATE section below, loaded from Google Drive).
+# Last substantive change: 2026-07-15 — added engineering/task-authoring.md to the
+# always-on governing standards (assumptions block + goal-not-mechanism), after two
+# task-file instructions specified mechanisms in domains the author could not see and
+# would have caused real damage if followed literally.
 
 Load these skills at the start of any software/coding project conversation.
 
@@ -19,33 +20,34 @@ Load these skills at the start of any software/coding project conversation.
 5. engineering/flow-test.md
 6. engineering/holistic-code-audit.md
 7. engineering/verify-before-claiming.md
-8. engineering/verify-before-versioning.md
-9. engineering/trust-the-live-signal.md
-10. engineering/no-assumed-memory.md
-11. engineering/propagate-the-fix.md
-12. engineering/propagate-the-lesson.md
-13. engineering/close-known-gaps.md
-14. engineering/no-dead-ends.md
-15. engineering/hostile-environment-testing.md
-16. engineering/anticipate-user-mistakes.md
-17. engineering/ponytail-audit.md
-18. engineering/push-to-git.md
-19. engineering/engineering-review.md
-20. engineering/architecture-review.md
-21. engineering/database-hygiene.md
-22. engineering/ux-review.md
-23. engineering/mobile-ux.md
-24. engineering/cross-project-audit.md
-25. engineering/external-integration-audit.md
-26. engineering/security-audit.md
-27. engineering/production-drift.md
-28. engineering/skill-library-audit.md
-29. engineering/session-cold-start.md
-30. engineering/version-management.md
-31. engineering/comprehensive-audit.md
-32. engineering/discord-announcements.md
-33. engineering/hermes-upload.md
-34. productivity/board-of-directors.md
+8. engineering/task-authoring.md
+9. engineering/verify-before-versioning.md
+10. engineering/trust-the-live-signal.md
+11. engineering/no-assumed-memory.md
+12. engineering/propagate-the-fix.md
+13. engineering/propagate-the-lesson.md
+14. engineering/close-known-gaps.md
+15. engineering/no-dead-ends.md
+16. engineering/hostile-environment-testing.md
+17. engineering/anticipate-user-mistakes.md
+18. engineering/ponytail-audit.md
+19. engineering/push-to-git.md
+20. engineering/engineering-review.md
+21. engineering/architecture-review.md
+22. engineering/database-hygiene.md
+23. engineering/ux-review.md
+24. engineering/mobile-ux.md
+25. engineering/cross-project-audit.md
+26. engineering/external-integration-audit.md
+27. engineering/security-audit.md
+28. engineering/production-drift.md
+29. engineering/skill-library-audit.md
+30. engineering/session-cold-start.md
+31. engineering/version-management.md
+32. engineering/comprehensive-audit.md
+33. engineering/discord-announcements.md
+34. engineering/hermes-upload.md
+35. productivity/board-of-directors.md
 
 (copy-review and database-review are intentionally absent — see the PRIVATE section below.)
 
@@ -58,6 +60,7 @@ Load these skills at the start of any software/coding project conversation.
 - **flow-test** — Walk through the product as a real user would, checking every journey works end-to-end. Now the canonical home for the "integration seam check" technique (data-handoff tracing), also referenced by holistic-code-audit rather than duplicated there.
 - **holistic-code-audit** — UPDATED to v1.1. The 8-discipline code audit (runs in chat). Discipline 6 now points to flow-test's Phase 0 for the integration seam check instead of repeating it. Use engineering-review for deeper Claude Code audits.
 - **verify-before-claiming** — Requires real execution proof before any report says "fixed," "working," "deployed," or "verified." Always-on.
+- **task-authoring** — Governs how task files are written for an implementer. Every task.md opens with an ASSUMPTIONS block (each factual dependency, its source, verified or not); in any domain the author cannot see — code, server, database, target OS — state the GOAL, never the mechanism. The implementer enforces it: no assumptions block, or a mechanism the author couldn't have verified, gets called out and the goal followed instead. Always-on.
 - **verify-before-versioning** — Before creating any new skill file, or a new version of an existing skill/bundle, always do a fresh, live search of the actual Drive folder right now. Always-on.
 - **trust-the-live-signal** — When a stored value, documentation, or a surface-level observation disagrees with a live, directly-checkable signal, trust the live signal. Always-on.
 - **no-assumed-memory** — Never assume a fresh session shares memory with a different conversation. Always-on whenever work crosses a session boundary.
@@ -106,7 +109,7 @@ rather than assuming a filename. The private set is exactly:
 - skill-library-audit: after every major sprint, or when a production failure reveals a skill gap
 - session-cold-start: at the beginning of every session
 - hermes-upload: at the end of every session
-- verify-before-claiming, verify-before-versioning, trust-the-live-signal, no-assumed-memory, propagate-the-fix, propagate-the-lesson, close-known-gaps, no-dead-ends: always-on, every time, no exceptions.
+- verify-before-claiming, task-authoring, verify-before-versioning, trust-the-live-signal, no-assumed-memory, propagate-the-fix, propagate-the-lesson, close-known-gaps, no-dead-ends: always-on, every time, no exceptions.
 - hostile-environment-testing: before shipping any installer/launcher/scheduled-script change.
 - anticipate-user-mistakes: before shipping any new user-facing control, and inside every comprehensive audit.
 - ponytail-audit: periodically as part of a comprehensive audit, or after a long stretch of active feature development.
