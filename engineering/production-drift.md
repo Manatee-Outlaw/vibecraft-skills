@@ -3,9 +3,12 @@ name: production-drift
 description: >
   Audit the gap between what's in version control (GitHub) and what's
   actually running in production. Detects untracked changes, config drift,
-  package drift, and undocumented infrastructure. Designed for single-server
-  deployments (Raspberry Pi, VPS) and expandable to cloud environments.
-  Read-only — produces a drift report, makes no changes.
+  package drift, undocumented infrastructure, and dead write paths — code that
+  is deployed and correct but never actually runs in production (a table with a
+  real INSERT path that has zero rows, or a write endpoint whose caller was
+  retired). Designed for single-server deployments (Raspberry Pi, VPS) and
+  expandable to cloud environments. Read-only — produces a drift report, makes
+  no changes.
 ---
 
 # Production Drift Audit Skill
@@ -15,6 +18,8 @@ description: >
 - Before a major release or infrastructure change
 - When something works in production but can't be explained by git history
 - After any manual server-side changes (crontab, .env, config files)
+- When a feature was built and shipped but you're not sure anyone actually
+  uses it (a table that may be empty, an endpoint that may have no caller)
 - Periodically as a health check (monthly or after major sprints)
 
 This skill is read-only. It produces a report. Do not make changes.
@@ -253,6 +258,96 @@ Check:
 
 ---
 
+## Step 10 — Dead write-path / orphaned-feature detection
+
+Steps 1–9 catch drift between git and the server. This step catches a
+different, quieter drift: code that is correct, deployed, and version-
+controlled, but that **never actually runs in production** — a table with a
+real INSERT path that has zero rows, or a write endpoint whose UI caller was
+retired and never rewired.
+
+Correctness audits (database-hygiene, holistic-code-audit) will pass this
+code: it reads correctly and even runs correctly when driven. Only
+cross-referencing the code's write paths against live production data reveals
+that nothing ever exercises them. That cross-reference is production drift's
+job, not a correctness skill's — database-hygiene checks whether the rows that
+exist are *valid*, never whether a table is *used at all*, and asking it to
+would fight its purpose.
+
+### 10a — Enumerate write paths, then check live row counts
+
+List every table the code can INSERT into:
+
+```bash
+# Every table named in an INSERT statement, deduped
+grep -rhoiE "INSERT (OR (IGNORE|REPLACE) )?INTO [a-z_]+" --include=*.py . \
+  | sed -E 's/.*INTO //I' | tr 'A-Z' 'a-z' | sort -u
+```
+
+For each such table, query its LIVE production row count — the real database
+the server writes to, not a fixture or a local copy:
+
+```sql
+SELECT COUNT(*) FROM <table>;
+```
+
+Flag any table with a defined INSERT path that has **0 rows**, or whose count
+has not moved in N weeks (compare against a prior run, or the max of a
+created/updated timestamp column if one exists). A zero-row table with live
+write code is the signal: the write path has never successfully committed in
+production, across the whole lifetime of the table — not merely "quiet
+lately."
+
+### 10b — For each flagged table, classify WHY the path never fired
+
+A zero-row-with-write-path table is an anomaly, not a verdict. Trace each
+write path to its trigger and classify it — the two diagnoses need opposite
+fixes and must not be conflated:
+
+- **reachable-and-unused (workflow gap):** the trigger (a button, an admin
+  action, a scheduled job) is live and reachable, but nobody runs it — the
+  real workflow goes through a different feature. The code is fine; the
+  feature is unadopted. This is a product decision, not a code change.
+- **unreachable / orphaned (code rot):** the trigger was removed or hidden and
+  the write path was never cleaned up — a button that no longer renders, a
+  route whose page was retired, a caller deleted in a refactor. This is dead
+  code to remove.
+
+Do not guess which. Establish it per path with real evidence — the trigger's
+reachability in the running app, and the access logs (has this endpoint ever
+been hit? "nobody tried" vs "tried and silently failed" are different bugs).
+
+### 10c — Orphaned write endpoints (no live caller)
+
+The endpoint half is checkable from code alone. For every route handler that
+writes to the database, confirm a live caller exists in the client:
+
+```bash
+# Every DB-writing route
+grep -rnE "@app.route\(.*(POST|PUT|PATCH|DELETE)" --include=*.py .
+# For each write route's path, search the client for an ACTUAL invocation
+grep -rn "<route-path>" --include=*.html --include=*.js .
+```
+
+Flag any write route whose only references are **comments, note text, or a
+retired page** — where no `fetch()` / `api()` / form action actually calls it.
+That is an orphaned endpoint: live on the server, unreachable from the app.
+(Verify the absence the way verify-before-claiming demands — say where you
+searched; "no caller" is itself a claim.)
+
+### 10d — Hand anomalies to trust-the-live-signal, don't re-derive it
+
+Everything this step surfaces is a live-data anomaly — an empty table, a flat
+count, a caller-less route. Do **not** explain it away here with a plausible
+story ("probably new", "hasn't fired yet"). Hand each finding to the
+**trust-the-live-signal** discipline: treat the story as a hypothesis and
+check it in one query (the row count, the access log, the caller grep). This
+step's job is to *surface* the anomaly proactively — the thing a pure
+correctness pass never goes looking for; trust-the-live-signal governs how you
+*resolve* it once surfaced. Don't duplicate that standard's logic here.
+
+---
+
 ## Output format
 
 Produce a report with these sections:
@@ -288,6 +383,13 @@ System config files with documentation status.
 
 ### DISK HEALTH
 Storage usage summary and any growth concerns.
+
+### DEAD WRITE-PATH / ORPHANED-FEATURE AUDIT
+Every table with an INSERT path and its live production row count. For each
+zero-row (or long-stale) table: the per-path classification — reachable-and-
+unused (workflow gap) vs unreachable/orphaned (code rot) — with the evidence
+that decided it (trigger reachability, access-log hits). Every DB-writing
+route with no live client caller. State where you searched for callers.
 
 ### REMEDIATION CHECKLIST
 Ordered list of actions to bring production back in sync with git,
