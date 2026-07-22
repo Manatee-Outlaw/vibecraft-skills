@@ -387,6 +387,53 @@ one rarely gets deleted the same week the new one ships.
 
 ---
 
+## Step 11 — Watchdog self-validation (who watches the health check?)
+
+Every step so far trusts the monitoring layer to be a fixed point of truth.
+This step removes that assumption: **the watchdog is code too, and it can
+carry the exact bug class it exists to catch.** In one real system, the
+health-check script filtered "active streamers" through a denormalized role
+column while the rest of the codebase had a known stale-mirror bug in that
+very column — so the watchdog silently under-counted its own patrol area and
+never flagged the users the bug was hiding. The check that should have caught
+the bug HAD the bug, and nothing was positioned to notice: a watchdog that
+under-reports looks identical to a healthy system.
+
+For every health-check / watchdog / alarm script on the box (find them in the
+crontab from Step 3):
+
+1. **Predicate cross-check.** For each predicate the watchdog filters on
+   ("active", "established", "recent", "streamer"), compare its result set
+   against the same concept computed the way the application's most-recently-
+   audited code computes it. A count mismatch is a finding — one of the two is
+   wrong, and it's a coin flip which:
+
+```bash
+# e.g. watchdog says N monitored users; the authoritative query says M
+# N != M -> someone is invisible to monitoring
+```
+
+2. **Known-bad probe.** Can each alarm actually fire? For every alarm,
+   demonstrate a firing path with a synthetic known-bad condition — a test
+   hook (`--stale-days 0`-style override), a dry-run against a doctored
+   threshold, or a staging row. An alarm that has never once fired in its
+   life is UNPROVEN, not healthy — the same standard verify-before-claiming
+   applies to "the check reported clean": show the check COULD have come back
+   dirty. Record when each alarm last demonstrably fired (real or test).
+
+3. **Coverage drift.** Diff the watchdog's monitored surface against what
+   the system now has: tables added since the health check was last touched
+   (git log the check script vs the schema doc), new client paths without a
+   liveness signal, new cron jobs with no failure alarm. Watchdogs are
+   written once and grow stale while the system grows — staleness here is
+   silent by construction.
+
+Rate a predicate mismatch on an alerting path as HIGH: it means some part of
+production is patrolled by nobody, and every OK summary since the mismatch
+began has been partially vacuous.
+
+---
+
 ## Output format
 
 Produce a report with these sections:
