@@ -203,6 +203,41 @@ Rollout:
 
 ---
 
+## Step 7 — Server-side diagnosability of client failures
+
+Steps 1-6 verify the integration handles events correctly when it runs. This
+step asks a different question: **when the client half of the integration
+fails on the user's machine, does the server side ever find out?**
+
+Client-side components (a bridge process, an in-app plugin, a local agent) run
+on hardware you don't control and can't inspect. A failure there — a crash, a
+version mismatch, a dead websocket, a rejected token — is invisible by default:
+the server just stops receiving data, which looks identical to "the user isn't
+using it." In one real deployment, an entire integration path sent NO liveness
+signal at all; clients on that path died mid-session for weeks and the only
+server-side evidence was traffic stopping cold, indistinguishable from a quiet
+day. The gap was structural, not incidental — no mechanism existed that COULD
+have surfaced it.
+
+For every client-side component in the Step 1 inventory, fill in this matrix:
+
+| Component | Liveness signal to server? | Version reported? | Local error log reaches server? | Failure looks like... |
+|---|---|---|---|---|
+| e.g. bridge | heartbeat every N sec | yes, per heartbeat | tail-upload on restart | alert within 10 min |
+| e.g. plugin | NONE | download-time only | no | silence — unknowable |
+
+Flag every row where the honest answer to "what does this failure look like
+from the server?" is **"nothing."** For each flagged row, also check the
+inverse: is there a watchdog that would notice the signal STOPPING (a stale
+heartbeat alarm), or does the signal exist but nothing consumes it? A
+write-only liveness signal is the arrival-audit trap wearing a different hat.
+
+Rate a structurally-unknowable failure mode on a revenue- or data-bearing
+path as HIGH — the cost isn't the failure itself, it's every week of it that
+nobody could have noticed.
+
+---
+
 ## Output format
 
 ### DOCUMENTATION VERIFICATION (Step 0 result)
