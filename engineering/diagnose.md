@@ -82,6 +82,6 @@ Then ask: **what would have prevented this bug?** The answer points to which ski
 
 - "The code was too tangled to test in isolation" → run **improve-codebase-architecture** to find and fix the structural problem that made this bug hard to catch.
 - "The user journey had a step that silently lost data, or two parts of the app didn't share information correctly" → run **flow-test** (especially Phase 0, the integration seam check) to find other gaps in the same flow.
-- "The bug would have been caught by a thorough pre-release review" → run **holistic-code-audit** across the affected files to check all 8 disciplines and catch any similar issues that haven't surfaced yet.
+- "The bug would have been caught by a thorough pre-release review" → run **holistic-code-audit** across the affected files to check all 9 disciplines and catch any similar issues that haven't surfaced yet.
 
 One bug is rarely alone. Finishing the fix is the right time to look for its siblings.
