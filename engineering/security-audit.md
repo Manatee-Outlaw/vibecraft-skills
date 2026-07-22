@@ -109,6 +109,31 @@ Search the codebase for:
 - .env file committed to git (check .gitignore)
 - Old credentials in git history (flag for BFG purge)
 
+**Tooling and IDE configuration files — scan these too, not just application
+code.** Developer tooling quietly persists real commands, and real commands
+sometimes contain real secrets. A real staff password was found embedded in an
+AI-assistant permissions file (`.claude/settings.local.json`) — a `curl -u
+user:password ...` command approved once during a debugging session and saved
+verbatim into the tool's allowlist, where no secret scanner ever looked.
+(It turned out to have been rotated before discovery — but only the live-test
+in point 1 below established that; the file itself couldn't say.)
+Sweep, at minimum:
+
+```bash
+# Assistant/IDE config that records approved or executed commands
+grep -rniE "(password|passwd|token|secret|api.?key|Authorization|-u [^ ]+:[^ ]+)"   .claude/ .vscode/ .idea/ .cursor/ 2>/dev/null
+# Shell history and rc files on the production host, same pattern
+```
+
+For each hit: (1) determine whether the credential is STILL LIVE by testing it
+against the real system — a dead credential is cleanup, a live one is an
+incident requiring rotation, and the two must not be conflated; (2) check
+whether the containing file is protected by the REPO's own .gitignore, not
+merely a machine-global ignore that doesn't travel with a clone; (3) remove
+the entry either way. These files are re-populated by normal tool use, so this
+is a recurring sweep, not a one-time fix.
+
+
 ---
 
 ## Step 6 — Session security
