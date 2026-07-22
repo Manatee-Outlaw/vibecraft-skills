@@ -346,6 +346,45 @@ step's job is to *surface* the anomaly proactively — the thing a pure
 correctness pass never goes looking for; trust-the-live-signal governs how you
 *resolve* it once surfaced. Don't duplicate that standard's logic here.
 
+### 10e — Parallel-mechanism detection (two solutions, one problem)
+
+10a-10c find single dead paths. This sub-step finds their most expensive
+disguise: **two mechanisms in the same codebase that solve the same problem,
+where one is dead or dying** — and the dead one hides because the problem IS
+being solved, just by the other mechanism. A dead table next to a live
+feature reads as "unused feature"; a dead table next to a THRIVING SIBLING
+reads as "we already migrated," and nobody ever writes that down.
+
+Real shape of the finding: a lightweight prospect-intake table (0 rows, live
+write route) coexisting with a full CRM whose candidates table was growing
+daily — the intake path had been superseded for weeks, its UI entry point
+still rendered, and no document said which one was canonical.
+
+The check: take every zero-row/flat table and caller-less route from 10a-10c
+and ask, per finding: **"what does this codebase use INSTEAD to do this
+job?"** Search by domain noun, not by table name:
+
+```bash
+# e.g. the dead table is prospect_profiles — search the domain concept
+grep -rniE "prospect|candidate|intake|lead" --include=*.py --include=*.html .   | grep -viE "prospect_profiles"
+```
+
+Three possible answers, three different findings:
+
+- **A live sibling exists and is clearly canonical** → the dead mechanism is
+  SUPERSEDED. The finding is not "unused feature" but "unfinished migration":
+  flag the leftover write path, any UI entry points still reachable, and the
+  missing tombstone note saying which mechanism won. Recommend retiring the
+  loser explicitly — half-retired mechanisms grow back.
+- **A live sibling exists but they PARTITION the job** (each handles a
+  distinct case) → not drift; document the split if no doc says it.
+- **No sibling** → plain 10b classification applies (unadopted vs orphaned).
+
+Also run the check in reverse once per audit: list the codebase's top-level
+jobs (ingestion, reporting, alerting, imports, auth) and for each ask whether
+TWO implementations exist. Duplicated jobs accrete during rewrites — the old
+one rarely gets deleted the same week the new one ships.
+
 ---
 
 ## Output format
