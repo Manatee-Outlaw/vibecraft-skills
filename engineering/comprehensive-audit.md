@@ -108,6 +108,13 @@ audit" means:
 - **hostile-environment-testing**: any finding touching an installer,
   launcher, or scheduled script must be tested under messy real-world
   conditions, not just reviewed.
+- **re-verify-carried-claims**: a specific claim carried from an earlier
+  report — a number, a date, a named example, a count — must be re-verified
+  live before being repeated in a new finding or report. A real saved report
+  satisfies no-assumed-memory and can still be wrong or stale; repeating it
+  unchecked launders the error into a fresh document with fresh authority.
+  If re-verification is impossible, attribute explicitly ("per the <date>
+  report, not re-verified") rather than restating bare.
 - **no-assumed-memory**: every subagent works from the real, embedded
   context provided (the actual files read for this audit) — not from any
   assumption about what a previous audit or conversation already
