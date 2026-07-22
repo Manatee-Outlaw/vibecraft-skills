@@ -301,6 +301,50 @@ footnote.**
 
 ---
 
+## Mirror-Read Audit — Is Anyone Reading the Cache Instead of the Truth?
+
+Denormalized mirrors are everywhere: a `users.role` column kept in sync from a
+`user_roles` junction table, a cached `last_seen` beside an events table, a
+`status` flag summarizing child rows. The mirror exists for one consumer's
+convenience — and then other code quietly reads it as if it were the source.
+
+**Why this is a hygiene check and not a code-style nit:** a mirror that
+collapses information (one role column for a multi-role user, one status for a
+multi-state child set) doesn't just lag — it is WRONG for every row whose truth
+doesn't fit the mirror's shape. Every reader of the mirror inherits that
+wrongness silently. In one real codebase, a single mirror-read in a report
+generator excluded multi-role users from all coaching output; the first fix
+found the same read in the health-check watchdog and in six more interactive
+routes the same day. Mirror-reads are a CLASS, never a one-off.
+
+**The audit:**
+
+1. Find every mirror. For each table, ask: is any column derivable from
+   another table (a junction, a child table, an event log)? The schema doc
+   or a comment saying "kept in sync" / "denormalized" / "cached" is the tell.
+2. For each mirror, grep every read of it:
+
+```sql
+-- Which is authoritative? The one that is WRITTEN at the business event.
+-- Then find readers of the other one:
+```
+```bash
+grep -rn "users.role\|u\.role\|\[.role.\]" --include=*.py . | grep -v user_roles
+```
+
+3. Classify each reader: the sync/display code that legitimately touches the
+   mirror, versus **logic that filters, gates, or joins on it** — every one of
+   the latter is a latent wrong-answer for any row where mirror ≠ truth.
+4. Report them as one finding with every instance listed
+   (propagate-the-fix), plus the recommended authoritative read pattern
+   (usually an EXISTS against the junction/child table).
+
+**Rule of thumb:** a mirror may be SELECTed for display. The moment it appears
+in a WHERE clause, an eligibility check, or a JOIN condition, it must be the
+authoritative source instead — or the finding writes itself.
+
+---
+
 ## Migration Pattern — Adding Constraints to Existing Tables
 
 SQLite cannot add a UNIQUE constraint to an existing table directly. The safe migration
@@ -347,5 +391,8 @@ When designing or auditing any table, answer:
 7. **Is anything actually arriving in each column?** → Run the arrival audit: count the
    NULLs, check for a uniform value, compare recent rows against old ones. Empty is a
    finding, not a footnote — most of all for write-only columns nothing reads back
+8. **Is any code reading a denormalized mirror where an authoritative table exists?** →
+   Run the mirror-read audit: mirrors may be displayed, never filtered/gated/joined on.
+   Report mirror-reads as a class with every instance, not as one-offs
 
 ---
