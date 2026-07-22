@@ -27,7 +27,7 @@ fragments. Never audit while fixing. Audit first, fix second.
 
 ---
 
-## The 8 Audit Disciplines
+## The 9 Audit Disciplines
 
 Run all 8 on every audit. Don't skip disciplines because the codebase "looks fine."
 
@@ -114,6 +114,27 @@ Will this work in production?
 - Are dependency version pins tight enough to prevent surprise breakage on update?
 - Does documentation (setup guides, CLI help text) match what the code actually does?
 - Are there references to old domains, old file names, or deprecated features?
+
+### 9. Placeholder Provenance Audit
+Every hardcoded "approximation" outlives the person who understood it.
+- Find hardcoded values presented as data: literals returned by an endpoint or
+  rendered by UI with words like "approximation", "placeholder", "derived",
+  "estimate", "TODO: real", or a suspiciously round composition (62/26/12
+  summing to 100). Grep for those words near literals; also scan API handlers
+  returning inline constant objects.
+- For each: does a DURABLE design note exist — a doc, a decision record, a
+  linked issue — saying what it represents, where the number came from, and
+  what "real" would look like? An inline comment saying "derived approximation"
+  with no derivation is the finding, not the answer: months later, git blame
+  gives a commit that just says the same three words, and nobody can
+  reconstruct whether the value was ever real.
+- The finding is NOT "replace the placeholder" (that's a product decision).
+  The finding is "the intent is not durably documented anywhere a future
+  session could find it" — flag it, name the missing note, and move on.
+- Highest severity variant: the placeholder renders PER-ENTITY as if it were
+  that entity's real data (every entity shows the same number). That is a
+  silent-failure/state-consistency issue too — cross-file it with disciplines
+  2 and 7.
 
 ---
 
