@@ -1,3 +1,17 @@
+---
+name: backlog-reconciliation
+description: >
+  Full audit of every open backlog item (TD-, DF-, BUG-, PE- numbered, or
+  otherwise tracked) against live evidence, not memory or an old document.
+  Combines a systematic git log sweep with a cross-reference against every
+  available handoff/backlog document to determine the REAL current status of
+  each item: done, open, retired, or genuinely unrecoverable. Use when a
+  backlog document is suspected stale, before writing a new comprehensive
+  backlog document, or periodically to prevent silent staleness from
+  accumulating. Trigger phrases: "reconcile the backlog", "audit our
+  backlog", "is this still open", "check the backlog against git".
+---
+
 # Backlog Reconciliation
 
 ## Why this skill exists
