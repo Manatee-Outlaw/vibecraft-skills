@@ -1,32 +1,38 @@
 ---
 name: ux-review
 description: >
-  Heuristic evaluation of the product's interface. Checks whether the UI
-  follows established UX principles: system status visibility, error prevention,
-  consistency, user control, helpful error messages, empty states, and loading
-  feedback. Also checks domain-specific concerns: coaching tone, progress
-  visibility toward the revenue goal, and whether the interface feels
-  encouraging vs clinical. Trigger phrases: "UX review", "usability review",
-  "heuristic review", "is the UI good", "UI audit", "UX audit", "review the
-  interface", "check the user experience".
-last_updated: 2026-06-29
+  Heuristic evaluation of the product's interface — the streamer-facing
+  product AND the manager/scout/owner-facing tooling (CRM, admin dashboards).
+  Checks whether the UI follows established UX principles: system status
+  visibility, error prevention, consistency, user control, helpful error
+  messages, empty states, loading feedback, and whether controls are actually
+  reachable from the states a real user will be in. Also checks domain-specific
+  concerns: coaching tone, progress visibility toward the revenue goal, and
+  whether the interface feels encouraging vs clinical. Trigger phrases: "UX
+  review", "usability review", "heuristic review", "is the UI good", "UI
+  audit", "UX audit", "review the interface", "check the user experience".
+last_updated: 2026-07-23
 ---
 
 # UX Review
 
 > **Communication note:** The reader may not be technical. Frame all findings
 > in terms of what the end user would experience, not in technical terms.
-> Every finding should answer:
-> "what does this cost the streamer?" — confusion, wasted time, lost trust, or
-> a coaching moment missed.
+> Every finding should answer: "what does this cost the person using it" —
+> confusion, wasted time, lost trust, a coaching moment missed (streamer
+> surfaces), or a task that can't actually be completed (manager/scout/owner
+> surfaces).
 
-A heuristic evaluation of the product's interface against 10 usability
-principles, adapted for the coaching platform context. This is not a bug hunt —
-it's a quality-of-experience audit.
+A heuristic evaluation of the product's interface against usability
+principles, adapted for the coaching platform context. Covers BOTH the
+streamer-facing product and the internal manager/scout/owner tooling — a
+control that works correctly but can't actually be found by the person who
+needs it is exactly as broken as one that doesn't work at all. This is not a
+bug hunt — it's a quality-of-experience audit.
 
 ---
 
-## The 10 Checks
+## The Checks
 
 ### CHECK 1 — System Status Visibility
 *Does the user always know what the system is doing?*
@@ -136,7 +142,36 @@ Check:
 - Are the streamer's wins celebrated anywhere, or only logged?
 - Is there anywhere the interface feels cold, impersonal, or clinical?
 
----
+### CHECK 11 — Control Reachability (state-dependent hiding)
+*If a control exists, can the target user actually GET to it from where
+they'll realistically be, not just from where a developer tested it?*
+
+This check exists because of a real bug: a delete button existed, worked
+correctly, and was tested successfully — but it lived on a record-detail tab
+that the app only auto-opens for candidates who've reached that specific
+pipeline stage. For an early-stage candidate, a manager landed on a
+completely different tab and had no way to discover the button was six tabs
+away. The control wasn't broken. It was unreachable from the one state a
+real user was actually in.
+
+This is a different question from error prevention (Check 5) or user
+control (Check 3) — those assume the user already found the control. This
+check asks whether they can find it at all, from their actual starting
+point, not an ideal one.
+
+For every control that isn't always visible on-screen (behind a tab, a
+conditional render, a state-dependent view, an auto-navigation), trace:
+1. What determines which view/tab/state a user lands on by default?
+2. For each realistic real-world state (not just the happy-path state used
+   in testing), does that default landing point actually expose the control,
+   or does it require the user to already know to navigate somewhere else?
+3. If the control is genuinely important across multiple states, does it
+   appear in a place that's visible regardless of state (e.g. a persistent
+   header), rather than being state-gated itself?
+
+Applies with equal weight to manager/scout/owner tooling as to the streamer
+product — internal tools get tested less by real varied usage, so this kind
+of gap is if anything more likely there, not less.
 
 ---
 
@@ -157,11 +192,13 @@ Check each of these screens for a brand-new user (no data):
 
 Group findings by severity:
 - **BLOCKER** — a UX failure that will cause a streamer to give up, lose trust,
-  or make a serious mistake
+  or make a serious mistake — or, for internal tooling, cause a manager/scout/
+  owner to be unable to complete a real task (including "unable to find a
+  control that exists," per Check 11)
 - **FRICTION** — adds unnecessary effort or confusion but doesn't stop the
-  streamer from completing their goal
+  user from completing their goal
 - **POLISH** — a small improvement that would make the experience feel more
   professional or intentional
 
 End with a **Top 3 Priorities** — the three changes that would most improve
-the streamer experience if fixed first.
+the experience if fixed first.
