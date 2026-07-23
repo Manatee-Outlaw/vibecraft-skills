@@ -19,28 +19,43 @@ what's stale, what overlaps, and what's never used.
 
 ---
 
-## Step 0 — Load the full skill library from Drive
+## Step 0 — Load the full skill library (hybrid: public GitHub + private Drive)
 
-Before doing any analysis, read every skill file from the Drive skills
-folder. Do not rely on skills already in context — the full library
-must be explicitly loaded to audit it completely.
+Before doing any analysis, read every skill file in full. Do not rely on
+skills already in context — the full library must be explicitly loaded to
+audit it completely.
 
-The engineering skills folder ID is: <drive-folder-id>
-The Claude Skills folder root ID is: <drive-folder-id>
+Since the 2026-07-15 skills-repo migration the library lives in TWO places,
+and both must be loaded:
 
-Steps:
-1. Search the root skills folder and all subfolders for every .md file
-2. Download and read each SKILL.md in full
-3. Also check for any bundle files (engineering.md, enterprise.md,
-   creative.md) that list which skills are active — these tell you
-   which skills are actually loaded vs. just stored
-4. Build a complete inventory before proceeding to Step 1
+1. **Public skills — the GitHub repo (source of truth).** Fetch each file
+   from `raw.githubusercontent.com/Manatee-Outlaw/vibecraft-skills/main/<bundle>/<skill>.md`.
+   Use `curl` (cache-busted), NOT WebFetch — WebFetch summarises through a
+   small model and a skill must be audited from its exact text. The Drive
+   copy of the public skills is a FOSSIL (proven stale on 2026-07-15); never
+   audit against it. Enumerate the real file list from the repo, e.g.
+   `git ls-files engineering/` in a local clone, or the GitHub API tree
+   endpoint — do not trust a hardcoded list here, it will drift.
 
-If a skill file cannot be read, flag it as UNREADABLE and continue.
-An unreadable skill is itself a finding.
+2. **Private skills — Google Drive (their only home).** A small set was
+   hard-walled out of the public repo (2026-07-14/15) because they name real
+   people, personal/financial detail, or live operational internals — e.g.
+   `engineering/copy-review.md`, `engineering/database-review.md`,
+   `productivity/board-of-directors*.md`. These live ONLY in Drive (and the
+   local `vibecraft-skills-PRIVATE` mirror, which is NOT a git repo and must
+   never become one). Load these via the Google Drive MCP tools
+   (`search_files` with parentId filtering, then `download_file_content`) or
+   from the local private mirror.
 
-Use the Google Drive MCP tools: search_files with parentId filtering,
-then download_file_content for each file found.
+Also load any bundle manifest (`engineering.md`, `enterprise.md`,
+`creative.md`) that lists which skills are active — these tell you which
+skills are actually loaded vs. just stored.
+
+Build a complete inventory across BOTH sources before proceeding to Step 1.
+If a skill file cannot be read, flag it as UNREADABLE and continue — an
+unreadable skill is itself a finding. If a private skill's content is
+sensitive, audit its classification and freshness without re-surfacing the
+sensitive body in the report.
 
 ---
 

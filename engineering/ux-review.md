@@ -159,6 +159,13 @@ control (Check 3) — those assume the user already found the control. This
 check asks whether they can find it at all, from their actual starting
 point, not an ideal one.
 
+It is also the mirror image of `anticipate-user-mistakes`, and the two are
+easy to conflate: Check 11 asks *can the user reach this control* (a
+discoverability question); `anticipate-user-mistakes` asks *what happens
+when the user misuses the control once they have it* (a robustness
+question). Reach for that skill when the concern is the second one — a
+found-but-dangerous control — not this one.
+
 For every control that isn't always visible on-screen (behind a tab, a
 conditional render, a state-dependent view, an auto-navigation), trace:
 1. What determines which view/tab/state a user lands on by default?

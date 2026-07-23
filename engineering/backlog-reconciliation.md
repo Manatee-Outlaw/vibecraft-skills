@@ -9,7 +9,8 @@ description: >
   backlog document is suspected stale, before writing a new comprehensive
   backlog document, or periodically to prevent silent staleness from
   accumulating. Trigger phrases: "reconcile the backlog", "audit our
-  backlog", "is this still open", "check the backlog against git".
+  backlog", "is this backlog item still open", "check the backlog against
+  git".
 ---
 
 # Backlog Reconciliation
@@ -30,6 +31,12 @@ nobody was even wrong at the time they wrote it. The record just never
 caught up with the work.
 
 ## The core method: two evidence sources, cross-referenced
+
+This skill is one applied instance of `trust-the-live-signal` — the parent
+principle that a live signal (git history, a running system, a real query)
+outranks any stored or documented claim about status. Backlog reconciliation
+is that principle pointed specifically at TD-/DF-/BUG-/PE- tracking. Where the
+two disagree, the live evidence wins and the document gets updated.
 
 Neither source alone is reliable. Combined, they cover almost everything.
 
@@ -79,6 +86,25 @@ document name and date, or a plain "no evidence found anywhere checked."
 Flag any finding that changes an item's priority — especially anything
 previously treated as high-risk or urgent that turns out to already be
 resolved, since that's the highest-value output of this skill.
+
+## Success criterion & failure modes
+
+**Done when:** every known ID has a row, and every row is either backed by
+concrete cited evidence (a commit hash, or a named+dated document) OR
+explicitly labelled `unconfirmed-needs-human` — never silently left as
+"open" on a git miss alone. A reconciliation with any bare "still open" that
+was never checked against Source 2 is NOT complete.
+
+**When evidence is missing or contradictory, degrade honestly — don't guess:**
+- *Git access unavailable* (no clone, no network): run Source 2 only and mark
+  every git-dependent verdict `unconfirmed-needs-human` — do not upgrade a
+  documentation hit to "closed-with-evidence" without the commit.
+- *The documentation trail itself is incomplete or self-contradictory*
+  (two handoffs disagree on status): report BOTH claims with their dates and
+  mark the item `unconfirmed-needs-human`. Never silently pick the newer or
+  the more convenient one — a contradiction is a finding, not a tiebreak.
+- *An ID appears nowhere in either source*: `no evidence found anywhere
+  checked`, which is distinct from "open" and must be reported as such.
 
 ## What this skill does NOT do
 
