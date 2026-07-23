@@ -4,10 +4,13 @@
 # -vN.N suffix to any file in this repo; that convention existed only because Google
 # Drive could not edit files in place, and suffixed filenames break the raw URLs that
 # project instructions point at.
-# Last substantive change: 2026-07-15 — added engineering/task-authoring.md to the
-# always-on governing standards (assumptions block + goal-not-mechanism), after two
-# task-file instructions specified mechanisms in domains the author could not see and
-# would have caused real damage if followed literally.
+# Last substantive change: 2026-07-23 — added engineering/backlog-reconciliation.md
+# after two items independently flagged as the backlog's highest-risk open work
+# (TD-1, TD-34) turned out to already be fully done weeks earlier, with nothing
+# marking them closed. Also added Check 11 (control reachability) to ux-review.md
+# and broadened its scope to explicitly cover manager/scout/owner tooling, not just
+# the streamer-facing product, after a real bug where a working, tested delete
+# button was unreachable from the one state a real user was actually in.
 
 Load these skills at the start of any software/coding project conversation.
 
@@ -47,6 +50,7 @@ Load these skills at the start of any software/coding project conversation.
 32. engineering/comprehensive-audit.md
 33. engineering/discord-announcements.md
 34. engineering/hermes-upload.md
+35. engineering/backlog-reconciliation.md
 
 (copy-review, database-review and board-of-directors are intentionally absent — see the PRIVATE section below.)
 
@@ -68,13 +72,13 @@ Load these skills at the start of any software/coding project conversation.
 - **close-known-gaps** — Once a real, known issue has been surfaced, the default is to fix it now rather than narrowing scope. Always-on.
 - **no-dead-ends** — Whenever something can enter a "not working" state, prove there's a real path back to working. Always-on for error states, reconnect cycles, and user-triggered stops.
 - **hostile-environment-testing** — Before trusting any installer, launcher, or scheduled script, test it against messy real-world conditions.
-- **anticipate-user-mistakes** — For every user-facing control, imagine the most natural mistake and check the real consequence.
+- **anticipate-user-mistakes** — For every user-facing control, imagine the most natural mistake and check the real consequence. Distinct from ux-review's Check 11: this asks "what happens when they misuse a control they found," not "can they find it at all."
 - **ponytail-audit** — Runs the /ponytail static-analysis tool for structural cleanup opportunities.
 - **push-to-git** — Full deploy in one command. Trigger: "push to git [message]", "deploy", "ship it".
 - **engineering-review** — Full 8-check bug hunt via Claude Code. Trigger: "engineering review", "code audit".
 - **architecture-review** — Deep structural analysis. Trigger: "architecture review".
 - **database-hygiene** — Design principles for SQLite tables and INSERT logic, plus the arrival audit: whether data is actually landing in a column, not just whether its absence can break anything. Empty or uniform is a finding; write-only columns have no consumer to notice they broke.
-- **ux-review** — Heuristic evaluation of the interface. Trigger: "UX review".
+- **ux-review** — Heuristic evaluation of the interface, covering both the streamer-facing product and manager/scout/owner tooling. Includes Check 11: whether a control is actually reachable from the real state a user will be in, not just present somewhere in the DOM. Trigger: "UX review".
 - **mobile-ux** — Reviews the interface for mobile use. Trigger: "mobile review".
 - **cross-project-audit** — Audits how multiple Claude project chats interact. Trigger: "cross-project audit".
 - **external-integration-audit** — Audits implementation against vendor documentation. Mandatory Step 0: confirm real, current docs were used. Trigger: "integration audit".
@@ -86,6 +90,7 @@ Load these skills at the start of any software/coding project conversation.
 - **comprehensive-audit** — Runs the full engineering audit via concurrent subagents. All governing standards are baked into the skill itself and apply automatically. Trigger: "comprehensive audit", "full audit", "audit everything."
 - **discord-announcements** — Drafts Discord announcements. Trigger: "draft a Discord announcement".
 - **hermes-upload** — Generates a handoff document and uploads to Drive. Every number in the handoff carries its provenance — sample or population, measured or estimated, by whom — because the handoff is the one document every cold start trusts and never re-derives, so a denominator dropped here becomes a false statistic downstream. Trigger: "hermes upload".
+- **backlog-reconciliation** — Determines the REAL current status of every tracked backlog item (TD-/DF-/BUG-/PE- numbered or otherwise) by combining a git log sweep with a full documentation cross-reference, rather than trusting an existing document's claimed status. Built after TD-1 and TD-34 both sat on the active backlog for weeks after already being finished. Trigger: "reconcile the backlog", "audit our backlog", "is this still open".
 
 ## PRIVATE — not in this repo; load from Google Drive
 
@@ -101,7 +106,8 @@ rather than assuming a filename. The private set is exactly:
 
 - engineering-review: before any significant release, after a bug-heavy session
 - architecture-review: quarterly, or before a major new feature
-- ux-review + mobile-ux: before any public-facing release
+- ux-review + mobile-ux: before any public-facing release, and before shipping any
+  significant change to manager/scout/owner tooling (Check 11 applies to both)
 - flow-test: before releasing any new feature — also run alongside holistic-code-audit discipline 6 for the full integration-seam treatment
 - production-drift: after every major sprint, and before any hosting migration
 - skill-library-audit: after every major sprint, or when a production failure reveals a skill gap
@@ -111,12 +117,15 @@ rather than assuming a filename. The private set is exactly:
 - hostile-environment-testing: before shipping any installer/launcher/scheduled-script change.
 - anticipate-user-mistakes: before shipping any new user-facing control, and inside every comprehensive audit.
 - ponytail-audit: periodically as part of a comprehensive audit, or after a long stretch of active feature development.
+- backlog-reconciliation: before writing any new comprehensive backlog document; every 4-6 weeks as standing hygiene; and immediately whenever a supposedly high-risk or blocking item turns out, on investigation, to already be resolved.
 
 ## Comprehensive audit — self-contained, no manual steps needed
 
 Say "comprehensive audit" and the comprehensive-audit skill handles everything —
 10 concurrent subagents, all 8 governing standards applied automatically to
-every finding. Nothing needs to be manually re-specified.
+every finding. Nothing needs to be manually re-specified. (backlog-reconciliation
+is deliberately NOT part of this automatic set — it's periodic hygiene, not a
+per-change code-quality check, and runs on its own cadence.)
 
 ## Note on this update — the skill-library read-through
 
