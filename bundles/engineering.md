@@ -14,8 +14,10 @@
 # Also 2026-07-23 (post-audit fixes): registered engineering/re-verify-carried-claims.md
 # into the load list + always-on set (it existed and was referenced by
 # comprehensive-audit.md but was never actually loaded by this bundle); corrected
-# ponytail-audit to describe the real ponytail:ponytail-audit skill instead of a
-# fictitious third-party tool; and replaced hardcoded governing-standard/discipline
+# ponytail-audit's authorship — it is a REAL third-party MIT plugin by DietrichGebert
+# (github.com/DietrichGebert/ponytail), installed here as ponytail@ponytail; an
+# intermediate edit wrongly called it Anthropic-authored, which was also false; and
+# replaced hardcoded governing-standard/discipline
 # counts here and in several skills with references to the actual lists, so they
 # stop drifting out of sync as the lists change.
 
@@ -82,7 +84,7 @@ Load these skills at the start of any software/coding project conversation.
 - **no-dead-ends** — Whenever something can enter a "not working" state, prove there's a real path back to working. Always-on for error states, reconnect cycles, and user-triggered stops.
 - **hostile-environment-testing** — Before trusting any installer, launcher, or scheduled script, test it against messy real-world conditions.
 - **anticipate-user-mistakes** — For every user-facing control, imagine the most natural mistake and check the real consequence. Distinct from ux-review's Check 11: this asks "what happens when they misuse a control they found," not "can they find it at all."
-- **ponytail-audit** — Runs the real ponytail:ponytail-audit over-engineering scan for structural cleanup opportunities (reinvented stdlib, unneeded deps, dead/superseded files, drifted duplication). It is an Anthropic skill in this session, not a third-party tool.
+- **ponytail-audit** — Runs the `ponytail:ponytail-audit` / `/ponytail-audit` over-engineering scan for structural cleanup opportunities (reinvented stdlib, unneeded deps, dead/superseded files, drifted duplication). ponytail is a real third-party MIT plugin by DietrichGebert (github.com/DietrichGebert/ponytail), installed here as `ponytail@ponytail` — not Anthropic's, not exclusive to Claude Code.
 - **push-to-git** — Full deploy in one command. Trigger: "push to git [message]", "deploy", "ship it".
 - **engineering-review** — Full 8-check bug hunt via Claude Code. Trigger: "engineering review", "code audit".
 - **architecture-review** — Deep structural analysis. Trigger: "architecture review".

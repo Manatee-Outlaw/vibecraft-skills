@@ -1,7 +1,7 @@
 ---
 name: ponytail-audit
 description: >
-  Run the real ponytail over-engineering audit against the codebase to find
+  Run the ponytail over-engineering audit against the codebase to find
   structural cleanup opportunities: reinvented standard-library code, unneeded
   dependencies, speculative abstractions, duplicated logic that's drifted apart
   across files, and dead or superseded files nobody deleted. Use periodically as
@@ -14,24 +14,52 @@ description: >
 
 ## What this is
 
-`ponytail` is the Anthropic-authored over-engineering skill family that ships
-with Claude Code — NOT a third-party tool. In this environment it is available
-as real, registered skills you invoke directly:
+`ponytail` is a real, third-party, MIT-licensed plugin authored independently by
+DietrichGebert — **github.com/DietrichGebert/ponytail**. It is NOT Anthropic's and
+NOT exclusive to Claude Code: the repo ships adapters for other agent hosts too
+(Codex, Cursor, Windsurf, Gemini/Antigravity, OpenCode, and others — each has its
+own config directory in the plugin).
 
-- **ponytail:ponytail-audit** — whole-repo scan for over-engineering: a ranked
-  list of what to delete, simplify, or replace with a stdlib/native equivalent.
-  This is the one this skill drives.
-- **ponytail:ponytail-review** — the same lens focused on a diff rather than the
-  whole repo (use during review of a specific change).
-- **ponytail:ponytail-debt** — harvests every `# ponytail:` marker comment in the
-  codebase into a debt ledger, so the deliberate shortcuts ponytail left behind
-  get tracked instead of rotting into "later means never".
+Verified locally 2026-07-23 from the installed plugin: marketplace source
+`DietrichGebert/ponytail`; `LICENSE` = MIT © 2026 DietrichGebert; installed here
+as the Claude Code plugin `ponytail@ponytail`, v4.7.0 (installed 2026-06-23; check
+the repo for the current version).
 
-It finds a different category of problem than a security audit or a bug hunt:
-not "is this broken," but "has this accumulated mess — a reinvented helper, a
-dependency doing what five lines would, an abstraction with one caller, a dead
-file beside its thriving replacement — that will cause a bug or a maintenance
-tax later."
+What it does: it enforces a YAGNI-first "ladder" before code is written — does
+this need to exist at all? is it already in the codebase? does the stdlib do it? a
+native platform feature? an already-installed dependency? can it be one line? —
+and only then the minimum code that works. Its audit commands turn that same lens
+on existing code. This is a different category of finding than a security audit or
+a bug hunt: not "is this broken," but "has this accumulated mess — a reinvented
+helper, a dependency doing what five lines would, an abstraction with one caller,
+a dead file beside its thriving replacement — that will cause a bug or a
+maintenance tax later."
+
+The plugin exposes several commands; the ones relevant here:
+
+- **`/ponytail-audit`** (skill `ponytail:ponytail-audit`) — audits the WHOLE repo
+  for over-engineering and hands back a delete/simplify list. This is the one this
+  skill drives.
+- **`/ponytail-review`** (skill `ponytail:ponytail-review`) — the same lens on a
+  diff rather than the whole repo (use during review of a specific change).
+- **`/ponytail-debt`** (skill `ponytail:ponytail-debt`) — harvests deferred
+  `ponytail:` marker comments into a ledger so the shortcuts it leaves behind get
+  tracked, not forgotten.
+
+## Availability in this session (verified, not assumed)
+
+As of 2026-07-23 the plugin IS installed and active in this Claude Code session
+(it started in "PONYTAIL MODE"). The whole-repo audit is invocable both as the
+slash command `/ponytail-audit` and as the skill `ponytail:ponytail-audit`.
+
+Do not carry the invocable name forward from memory — a plugin that isn't
+installed can't be run, so in a fresh session check the available plugins/skills
+first. If it is NOT installed, add it via the marketplace (two prompts):
+
+```
+/plugin marketplace add DietrichGebert/ponytail
+/plugin install ponytail@ponytail
+```
 
 ## When to use
 
@@ -43,21 +71,15 @@ tax later."
 
 ## How to run it
 
-Invoke the real skill directly — say "run a ponytail audit" (or `/ponytail-audit`),
-which triggers **ponytail:ponytail-audit** against the repository. It is an
-existing capability, not something Claude Code needs to be taught; your job is to
-run it and capture the full output. If you are generating a task.md for Claude
-Code, the instruction is simply:
+Say "run a ponytail audit" (or `/ponytail-audit`) to trigger the whole-repo scan.
+It is an existing capability — your job is to run it and capture the full output.
+If generating a task.md for Claude Code, the instruction is simply:
 
 ```
-Run the ponytail:ponytail-audit skill against this repository. Report every
-finding it produces, in full — do not summarize or filter the list before
-showing it back.
+Run /ponytail-audit (the ponytail:ponytail-audit skill) against this repository.
+Report every finding it produces, in full — do not summarize or filter the list
+before showing it back.
 ```
-
-Do NOT describe ponytail as an external binary or a URL to fetch; it is a skill
-in this session. (An earlier version of this file wrongly described it as a
-third-party tool at a made-up GitHub URL — that provenance was fictitious.)
 
 ## How to triage the findings
 
