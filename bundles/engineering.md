@@ -61,6 +61,7 @@ Load these skills at the start of any software/coding project conversation.
 34. engineering/discord-announcements.md
 35. engineering/hermes-upload.md
 36. engineering/backlog-reconciliation.md
+37. engineering/respect-settled-decisions.md
 
 (copy-review, database-review and board-of-directors are intentionally absent — see the PRIVATE section below.)
 
@@ -91,6 +92,7 @@ Load these skills at the start of any software/coding project conversation.
 - **database-hygiene** — Design principles for SQLite tables and INSERT logic, plus the arrival audit: whether data is actually landing in a column, not just whether its absence can break anything. Empty or uniform is a finding; write-only columns have no consumer to notice they broke.
 - **ux-review** — Heuristic evaluation of the interface, covering both the streamer-facing product and manager/scout/owner tooling. Includes Check 11: whether a control is actually reachable from the real state a user will be in, not just present somewhere in the DOM. Trigger: "UX review".
 - **mobile-ux** — Reviews the interface for mobile use. Trigger: "mobile review".
+- **respect-settled-decisions** — Before any review-type skill flags a finding, check whether it was already deliberately reviewed and kept as-is (a `REVIEWED <date>` marker) — a settled decision isn't a fresh finding. Built after a copy-review pass re-flagged a decision that was already recorded in a code comment the same day. Always-on for every review-type skill.
 - **cross-project-audit** — Audits how multiple Claude project chats interact. Trigger: "cross-project audit".
 - **external-integration-audit** — Audits implementation against vendor documentation. Mandatory Step 0: confirm real, current docs were used. Trigger: "integration audit".
 - **security-audit** — Focused security review. Trigger: "security audit".
@@ -125,6 +127,7 @@ rather than assuming a filename. The private set is exactly:
 - session-cold-start: at the beginning of every session
 - hermes-upload: at the end of every session
 - verify-before-claiming, task-authoring, verify-before-versioning, trust-the-live-signal, no-assumed-memory, re-verify-carried-claims, propagate-the-fix, propagate-the-lesson, close-known-gaps, no-dead-ends: always-on, every time, no exceptions.
+- respect-settled-decisions: always-on specifically for any review-type skill (copy-review, ux-review, holistic-code-audit, security-audit, database-review, production-drift, comprehensive-audit) — check for a `REVIEWED` marker before flagging anything on the surface being reviewed.
 - hostile-environment-testing: before shipping any installer/launcher/scheduled-script change.
 - anticipate-user-mistakes: before shipping any new user-facing control, and inside every comprehensive audit.
 - ponytail-audit: periodically as part of a comprehensive audit, or after a long stretch of active feature development.

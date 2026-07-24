@@ -19,7 +19,11 @@ description: >
   empty string, or "0": a positive control proves the probe fired, not that it
   was pointed at the right thing, spelled the right way, on the right machine —
   print the target and read it back. Some tools fail silently and hand back a
-  plausible empty result rather than crashing.
+  plausible empty result rather than crashing. Also trigger before labeling
+  anything OUTSIDE the codebase (a tool, library, URL, author, license) as
+  fictitious, real, made-up, or verified — that needs an actual fetch or
+  search performed this session, never an inference from what's locally
+  available or familiar-sounding.
 ---
 
 # Verify Before Claiming
@@ -48,6 +52,11 @@ a report unless there is an actual execution trail behind that word.
 4. Am I about to repeat a claim from an earlier report or session without
    re-checking it myself right now? A prior "verified" is not proof — verify
    again if it materially matters to what's being decided.
+5. Have I actually tried to find evidence AGAINST this claim, not just
+   evidence consistent with it? A claim that's only ever been checked in the
+   direction that confirms it hasn't really been checked. If disproving it
+   never occurred to me as something to attempt, that absence is itself a
+   signal I stopped a step early.
 
 ## Required report format
 Every fix/deploy/audit report must separate these two categories explicitly:
@@ -244,6 +253,44 @@ plainly, in plain language, right next to the claim: "not verified by
 execution — reasoned from code review only, because [specific reason]."
 Never let an unverified claim read the same as a verified one in a report.
 
+## External claims need external verification, not internal inference
+Everything above concerns claims about THIS codebase — did it run, did it
+deploy, did the scan actually fire. There is a second category this skill
+failed to cover until it caused real damage: claims about the world OUTSIDE
+the codebase — does this tool exist, who made it, what license does it use,
+is this library real or invented. These need the same discipline, applied
+differently, because the failure mode is different.
+
+**The incident this section exists because of:** on 2026-07-23, a skill file
+described a real, 85,000-star, MIT-licensed, actively maintained third-party
+tool as "fictitious," and a fix for that error confidently replaced it with a
+second false claim — that the tool was "Anthropic-authored... NOT a
+third-party tool" — also stated as "Verified true." Neither claim had an
+actual fetch or search behind it. Both were inferred from indirect,
+in-session signals: a plugin name resembling something available in the
+current session was treated as proof of that plugin's origin, license, and
+popularity. It is not. Availability in a session proves the plugin is
+installed. It proves nothing about who wrote it, under what license, or
+whether the specific name in a file matches the specific thing installed.
+
+**The rule:** before labeling anything external as fictitious, made-up,
+real, verified, or resolved, there must be an actual fetch or search
+performed in that session, with the result shown — the same "paste the real
+output" standard as any other verified claim. If the environment cannot
+reach the external source (no internet access, no search tool available),
+the correct claim is "cannot verify externally from this environment" —
+stated plainly, per the section above — never a confident-sounding narrative
+built from what merely seems plausible or what happens to be locally
+available.
+
+**Specifically do not infer:**
+- Authorship or origin, from a name being locally available or familiar
+- Popularity, license, or maintenance status, from anything other than
+  actually checking the source
+- That something is fictitious, from simply not recognizing it — not
+  recognizing a real thing and confirming a thing doesn't exist are
+  different findings requiring different evidence
+
 ## Trigger this skill
 - Before finalizing any report that uses the words "fixed," "resolved,"
   "deployed," "working," "verified," or "complete"
@@ -262,3 +309,7 @@ Never let an unverified claim read the same as a verified one in a report.
   actually ran before deciding what the emptiness means
 - Whenever a check passes with a green control — ask what it was pointed at,
   and whether the data spells the thing the way the check spells it
+- Before labeling anything OUTSIDE the codebase — a tool, a library, a URL,
+  an author, a license — as fictitious, real, made-up, or verified. This
+  needs an actual fetch or search this session, not an inference from what's
+  locally available or familiar-sounding
