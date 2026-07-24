@@ -1,28 +1,32 @@
 ---
 name: adhd
 description: >
-  Parallel divergent ideation for coding agents. Spawns N isolated branches
-  under different cognitive frames (regulator, biology, speedrunner,
-  10-year-old, $0 budget), scores, clusters, prunes traps, and deepens the top
-  survivors. Use for open-ended design, architecture, naming, API/SDK surface,
-  and fuzzy-debugging decisions where the obvious answer is expensive to get
-  wrong. Trigger phrases: "/adhd", "ADHD mode", "brainstorm", "brainstorm
+  Parallel divergent ideation for any open-ended decision — code, marketing,
+  sales copy, positioning, pricing, business strategy, naming. Spawns N
+  isolated branches under different cognitive frames (regulator, biology,
+  speedrunner, 10-year-old, $0 budget), scores, clusters, prunes traps, and
+  deepens the top survivors. Use where the obvious answer is expensive to get
+  wrong: architecture, public API surface, a product name, a launch angle, a
+  pricing model, a go-to-market bet, or a fuzzy problem with no known root
+  cause. Trigger phrases: "/adhd", "ADHD mode", "brainstorm", "brainstorm
   this", "let's brainstorm", "let's figure out", "lets figure out", "help me
   think through", "help me think this through", "explore options", "what are my
-  options", "ideate", "throw ideas at this", "figure out the approach". Skip for
-  syntax, lookups, bugs with a known root cause, or closed phrasing ("quick",
-  "standard", "canonical", "textbook"). Full pre-flight gate is in the skill
-  body.
+  options", "ideate", "throw ideas at this", "figure out the approach",
+  "campaign ideas", "positioning ideas", "how should I pitch/price/name this".
+  Skip for lookups, syntax, facts, tasks with a known answer, or closed
+  phrasing ("quick", "standard", "canonical", "textbook"). Full pre-flight gate
+  is in the skill body.
 license: MIT
 ---
 
 # ADHD
 
 Stop picking the textbook answer. The first three answers the model would
-give are the answers a senior engineer would give in thirty seconds.
-Correct. Forgettable. The interesting answers live past number three, in
-the awkward middle nobody walks into. This skill makes the model walk
-there.
+give are the answers any senior practitioner — engineer, marketer,
+founder — would give in thirty seconds. Correct. Forgettable. The
+interesting answers live past number three, in the awkward middle nobody
+walks into. This skill makes the model walk there. It works the same on a
+schema design, a launch angle, a pricing page, or a product name.
 
 ## Pre-flight (run before Phase 1)
 
@@ -42,12 +46,13 @@ and go straight to Phase 1**. The user opted in. Do not second-guess.
 
 Ask yourself three questions. If the answer to any is no, ABORT.
 
-1. **Open-ended?** Would a senior engineer give multiple viable answers
+1. **Open-ended?** Would a sharp practitioner give multiple viable answers
    here, or is there one canonical answer? If canonical, abort.
 2. **High-stakes?** Is the cost of the obvious answer being wrong actually
    high? Architecture decisions, public API surfaces, naming a real
-   product, fuzzy bugs with no known root cause, schema design = yes.
-   Side project at 11pm = no.
+   product, a launch angle, a pricing model, positioning or a go-to-market
+   bet, fuzzy bugs with no known root cause, schema design = yes. A throwaway
+   tweak at 11pm = no.
 3. **Open phrasing?** Did the user avoid words like "quick", "standard",
    "canonical", "textbook", "just", "one-line"? If they used any of those,
    they want the direct answer. Abort.
@@ -98,8 +103,9 @@ For the problem P:
 After all branches return:
 
 1. **Score.** Rate each idea on three axes 0 to 10: novelty (distance from
-   the obvious default), viability (could it actually ship), fit (does it
-   address the stated problem). For any idea that looks attractive but is
+   the obvious default), viability (could it actually be shipped or
+   executed with the resources at hand), fit (does it address the stated
+   problem). For any idea that looks attractive but is
    a trap (hidden cost, false economy, will not scale, premature
    abstraction), flag it with a one-line reason.
 
@@ -113,14 +119,15 @@ After all branches return:
    call that produces:
    - a 4 to 8 sentence sketch of how the idea works
    - the load-bearing risk
-   - the first concrete step a builder would take
+   - the first concrete step the builder would take (write the code, draft
+     the copy, mock the page, run the test — whatever the domain calls for)
    - 3 to 5 child ideas (variations, hybrids, unlocks)
 
    Deepen Agent instruction:
 
    > You are in FOCUS mode. Take one promising idea and connect dots.
    > Sketch how it would actually work in 4 to 8 sentences. Name the
-   > load-bearing risk. Name the first concrete step a coder would take.
+   > load-bearing risk. Name the first concrete step to take it forward.
    > Then generate 3 to 5 sub-ideas that branch off (variations,
    > combinations with other domains, things this unlocks).
    > Output JSON only.
