@@ -6,7 +6,7 @@ description: >
   failures, auth gaps, missing routes, dead code, and git hygiene issues. Trigger
   immediately when the user says "engineering review", "code audit", "run audit",
   "bug hunt", or "check the codebase". For an in-chat audit without Claude Code,
-  use holistic-code-audit instead. For the full 8-skill comprehensive audit,
+  use holistic-code-audit instead. For the full comprehensive audit,
   use comprehensive-audit.
 ---
 

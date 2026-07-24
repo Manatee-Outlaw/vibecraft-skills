@@ -62,13 +62,24 @@ archived context.
 
 ---
 
-## Step 3 — Load skill bundles
+## Step 3 — Load skill bundles (from the GitHub repo, not Drive)
 
 Find and read the bundle files for this project. Bundles list which skills
 are active for this project type.
 
-Search the bundles folder for .md files. For engineering projects, read
-engineering.md. For creative projects, read creative.md. Read all that apply.
+Since the 2026-07-15 skills-repo migration the bundles live in the GitHub repo,
+NOT Drive — the Drive copy is a known fossil (it went stale within days and lost
+later rules). Fetch each bundle fresh and cache-busted from
+`raw.githubusercontent.com/Manatee-Outlaw/vibecraft-skills/main/bundles/<bundle>.md`
+with `curl`, NOT WebFetch (WebFetch summarises through a small model; a bundle
+must be read from exact text). For engineering projects read bundles/engineering.md;
+for creative projects bundles/creative.md; read all that apply. If you have a
+local clone, reading the freshly-pulled file is equivalent to repo HEAD and avoids
+raw-CDN caching lag right after a commit.
+
+The PRIVATE skills a bundle lists (e.g. copy-review, database-review,
+board-of-directors) still load from Google Drive — the bundle's own PRIVATE
+section names which and why.
 
 For each skill listed in the active bundles:
 - Note its name and trigger phrases

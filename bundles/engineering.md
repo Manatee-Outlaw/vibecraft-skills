@@ -11,6 +11,13 @@
 # and broadened its scope to explicitly cover manager/scout/owner tooling, not just
 # the streamer-facing product, after a real bug where a working, tested delete
 # button was unreachable from the one state a real user was actually in.
+# Also 2026-07-23 (post-audit fixes): registered engineering/re-verify-carried-claims.md
+# into the load list + always-on set (it existed and was referenced by
+# comprehensive-audit.md but was never actually loaded by this bundle); corrected
+# ponytail-audit to describe the real ponytail:ponytail-audit skill instead of a
+# fictitious third-party tool; and replaced hardcoded governing-standard/discipline
+# counts here and in several skills with references to the actual lists, so they
+# stop drifting out of sync as the lists change.
 
 Load these skills at the start of any software/coding project conversation.
 
@@ -27,30 +34,31 @@ Load these skills at the start of any software/coding project conversation.
 9. engineering/verify-before-versioning.md
 10. engineering/trust-the-live-signal.md
 11. engineering/no-assumed-memory.md
-12. engineering/propagate-the-fix.md
-13. engineering/propagate-the-lesson.md
-14. engineering/close-known-gaps.md
-15. engineering/no-dead-ends.md
-16. engineering/hostile-environment-testing.md
-17. engineering/anticipate-user-mistakes.md
-18. engineering/ponytail-audit.md
-19. engineering/push-to-git.md
-20. engineering/engineering-review.md
-21. engineering/architecture-review.md
-22. engineering/database-hygiene.md
-23. engineering/ux-review.md
-24. engineering/mobile-ux.md
-25. engineering/cross-project-audit.md
-26. engineering/external-integration-audit.md
-27. engineering/security-audit.md
-28. engineering/production-drift.md
-29. engineering/skill-library-audit.md
-30. engineering/session-cold-start.md
-31. engineering/version-management.md
-32. engineering/comprehensive-audit.md
-33. engineering/discord-announcements.md
-34. engineering/hermes-upload.md
-35. engineering/backlog-reconciliation.md
+12. engineering/re-verify-carried-claims.md
+13. engineering/propagate-the-fix.md
+14. engineering/propagate-the-lesson.md
+15. engineering/close-known-gaps.md
+16. engineering/no-dead-ends.md
+17. engineering/hostile-environment-testing.md
+18. engineering/anticipate-user-mistakes.md
+19. engineering/ponytail-audit.md
+20. engineering/push-to-git.md
+21. engineering/engineering-review.md
+22. engineering/architecture-review.md
+23. engineering/database-hygiene.md
+24. engineering/ux-review.md
+25. engineering/mobile-ux.md
+26. engineering/cross-project-audit.md
+27. engineering/external-integration-audit.md
+28. engineering/security-audit.md
+29. engineering/production-drift.md
+30. engineering/skill-library-audit.md
+31. engineering/session-cold-start.md
+32. engineering/version-management.md
+33. engineering/comprehensive-audit.md
+34. engineering/discord-announcements.md
+35. engineering/hermes-upload.md
+36. engineering/backlog-reconciliation.md
 
 (copy-review, database-review and board-of-directors are intentionally absent — see the PRIVATE section below.)
 
@@ -61,19 +69,20 @@ Load these skills at the start of any software/coding project conversation.
 - **to-prd** — Turn a conversation into a formal written spec so there is a clear record of what was agreed before work starts.
 - **improve-codebase-architecture** — Periodically survey the codebase for tangles and structural problems before they become expensive bugs.
 - **flow-test** — Walk through the product as a real user would, checking every journey works end-to-end. Now the canonical home for the "integration seam check" technique (data-handoff tracing), also referenced by holistic-code-audit rather than duplicated there. Phase 3 requires opening a real, recent output artifact (report, PDF, email, export) and reading it as the recipient — "it generated without an error" is not "it is correct".
-- **holistic-code-audit** — The 8-discipline code audit (runs in chat). Discipline 6 now points to flow-test's Phase 0 for the integration seam check instead of repeating it. Use engineering-review for deeper Claude Code audits.
+- **holistic-code-audit** — The full multi-discipline code audit (runs in chat; see its own "Audit Disciplines" list for the current set). Discipline 6 now points to flow-test's Phase 0 for the integration seam check instead of repeating it. Use engineering-review for deeper Claude Code audits.
 - **verify-before-claiming** — Requires real execution proof before any report says "fixed," "working," "deployed," or "verified" — and the same proof before any report says "clean," "no hits," or "all tests passed," because a scan that aborted or never ran reports identically to a real pass. Prove a check can fail before trusting that it didn't — then check what it was pointed at, because a live instrument with the wrong pattern returns the same clean zero as a right one. Names two anti-patterns literally: `echo "EXIT: $?"` (captures echo's status) and `gh api /user` (Git Bash rewrites it to a filesystem path); both hand back a plausible empty result instead of crashing. Always-on.
 - **task-authoring** — Governs how task files are written for an implementer. Every task.md opens with an ASSUMPTIONS block (each factual dependency, its source, verified or not); in any domain the author cannot see — code, server, database, target OS — state the GOAL, never the mechanism. The implementer enforces it: no assumptions block, or a mechanism the author couldn't have verified, gets called out and the goal followed instead. Always-on.
 - **verify-before-versioning** — Before creating any new skill file, or a new version of an existing skill/bundle, always do a fresh, live search of the actual Drive folder right now. Always-on.
 - **trust-the-live-signal** — When a stored value, documentation, or a surface-level observation disagrees with a live, directly-checkable signal, trust the live signal. Always-on.
 - **no-assumed-memory** — Never assume a fresh session shares memory with a different conversation. Always-on whenever work crosses a session boundary.
+- **re-verify-carried-claims** — Before repeating a specific figure, date, named example, or count carried from an earlier report/handoff/task, re-verify it live — a real saved report satisfies no-assumed-memory and can still be stale, and repeating it unchecked launders the error into a fresh document with fresh authority. Sibling of no-assumed-memory (that covers claims remembered from conversation; this covers claims READ from a saved report and repeated). Always-on.
 - **propagate-the-fix** — Whenever a bug is fixed, actively search the codebase for the same underlying pattern elsewhere. Always-on.
 - **propagate-the-lesson** — Whenever a genuinely general-purpose lesson or fix is identified, check every bundle for the same applicability, and check comprehensive-audit's own registration lists. Always-on.
 - **close-known-gaps** — Once a real, known issue has been surfaced, the default is to fix it now rather than narrowing scope. Always-on.
 - **no-dead-ends** — Whenever something can enter a "not working" state, prove there's a real path back to working. Always-on for error states, reconnect cycles, and user-triggered stops.
 - **hostile-environment-testing** — Before trusting any installer, launcher, or scheduled script, test it against messy real-world conditions.
 - **anticipate-user-mistakes** — For every user-facing control, imagine the most natural mistake and check the real consequence. Distinct from ux-review's Check 11: this asks "what happens when they misuse a control they found," not "can they find it at all."
-- **ponytail-audit** — Runs the /ponytail static-analysis tool for structural cleanup opportunities.
+- **ponytail-audit** — Runs the real ponytail:ponytail-audit over-engineering scan for structural cleanup opportunities (reinvented stdlib, unneeded deps, dead/superseded files, drifted duplication). It is an Anthropic skill in this session, not a third-party tool.
 - **push-to-git** — Full deploy in one command. Trigger: "push to git [message]", "deploy", "ship it".
 - **engineering-review** — Full 8-check bug hunt via Claude Code. Trigger: "engineering review", "code audit".
 - **architecture-review** — Deep structural analysis. Trigger: "architecture review".
@@ -113,7 +122,7 @@ rather than assuming a filename. The private set is exactly:
 - skill-library-audit: after every major sprint, or when a production failure reveals a skill gap
 - session-cold-start: at the beginning of every session
 - hermes-upload: at the end of every session
-- verify-before-claiming, task-authoring, verify-before-versioning, trust-the-live-signal, no-assumed-memory, propagate-the-fix, propagate-the-lesson, close-known-gaps, no-dead-ends: always-on, every time, no exceptions.
+- verify-before-claiming, task-authoring, verify-before-versioning, trust-the-live-signal, no-assumed-memory, re-verify-carried-claims, propagate-the-fix, propagate-the-lesson, close-known-gaps, no-dead-ends: always-on, every time, no exceptions.
 - hostile-environment-testing: before shipping any installer/launcher/scheduled-script change.
 - anticipate-user-mistakes: before shipping any new user-facing control, and inside every comprehensive audit.
 - ponytail-audit: periodically as part of a comprehensive audit, or after a long stretch of active feature development.
@@ -122,7 +131,8 @@ rather than assuming a filename. The private set is exactly:
 ## Comprehensive audit — self-contained, no manual steps needed
 
 Say "comprehensive audit" and the comprehensive-audit skill handles everything —
-10 concurrent subagents, all 8 governing standards applied automatically to
+concurrent subagents, with the full set of governing standards (the list in
+comprehensive-audit.md's GOVERNING STANDARDS section) applied automatically to
 every finding. Nothing needs to be manually re-specified. (backlog-reconciliation
 is deliberately NOT part of this automatic set — it's periodic hygiene, not a
 per-change code-quality check, and runs on its own cadence.)

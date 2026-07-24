@@ -1,8 +1,9 @@
 ---
 name: holistic-code-audit
 description: >
-  Run an 8-discipline code audit covering logic, failure modes, security, race
-  conditions, edge cases, integration seams, state consistency, and environment.
+  Run a multi-discipline code audit covering logic, failure modes, security, race
+  conditions, edge cases, integration seams, state consistency, environment, and
+  placeholder provenance.
   Use immediately when the user asks for a "code review", "audit", "check my code",
   "review the code", "code audit", or "debugging session" — and also after making
   fixes, to verify no new issues were introduced. Run before pushing any significant
@@ -29,7 +30,7 @@ fragments. Never audit while fixing. Audit first, fix second.
 
 ## The 9 Audit Disciplines
 
-Run all 8 on every audit. Don't skip disciplines because the codebase "looks fine."
+Run all of them on every audit. Don't skip disciplines because the codebase "looks fine."
 
 ### 1. Logic Audit
 Does the code do what it's supposed to?

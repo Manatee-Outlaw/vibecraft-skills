@@ -103,6 +103,6 @@ the meantime, which is exactly what happened in incident #5 above.
   connection/setup checks, logging, config loading) — these are exactly
   the kinds of things that tend to get duplicated across files rather
   than shared
-- As part of comprehensive-audit: any finding from any of the other 9
-  checks should itself be checked for siblings before being marked
+- As part of comprehensive-audit: any finding from any other audit check
+  should itself be checked for siblings before being marked
   resolved

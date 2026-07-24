@@ -355,18 +355,23 @@ being solved, just by the other mechanism. A dead table next to a live
 feature reads as "unused feature"; a dead table next to a THRIVING SIBLING
 reads as "we already migrated," and nobody ever writes that down.
 
-Real shape of the finding: a lightweight prospect-intake table (0 rows, live
-write route) coexisting with a full CRM whose candidates table was growing
-daily — the intake path had been superseded for weeks, its UI entry point
-still rendered, and no document said which one was canonical.
+Real shape of the finding (a real case on this project, now CLOSED — kept as an
+illustration of the pattern, not a current finding): a lightweight prospect-intake
+table (0 rows, live write route) coexisted with a full CRM whose candidates table
+was growing daily — the intake path had been superseded for weeks, its UI entry
+point still rendered, and no document said which one was canonical. That intake
+table was formally retired 2026-07-23, which is exactly the outcome this check
+drives toward. Look for the pattern, not this specific table — and per
+re-verify-carried-claims, confirm any table you cite here is still live before
+reporting it as an open finding.
 
 The check: take every zero-row/flat table and caller-less route from 10a-10c
 and ask, per finding: **"what does this codebase use INSTEAD to do this
 job?"** Search by domain noun, not by table name:
 
 ```bash
-# e.g. the dead table is prospect_profiles — search the domain concept
-grep -rniE "prospect|candidate|intake|lead" --include=*.py --include=*.html .   | grep -viE "prospect_profiles"
+# e.g. the dead table is <intake_table> — search the domain concept, not the table name
+grep -rniE "prospect|candidate|intake|lead" --include=*.py --include=*.html .   | grep -viE "<intake_table>"
 ```
 
 Three possible answers, three different findings:
