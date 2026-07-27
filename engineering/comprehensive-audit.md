@@ -51,8 +51,9 @@ move them back out into the task author's hands.
 8. **database-hygiene** — UNIQUE constraints, idempotency, retention policies, orphans
 9. **anticipate-user-mistakes** — innocent actions with disproportionate consequences
 10. **ponytail-audit** — accumulated mess, duplicated logic, dead/superseded files
+11. **render-smoke** — rendered-DOM broken-render signatures (undefined/NaN/$0/undefinedh) + interaction-backed fake-success, driven through seeded staging
 
-*To add skill #11: append it here with a one-line description.
+*To add skill #12: append it here with a one-line description.
 It will receive its own dedicated subagent in the next audit automatically.*
 
 ---
