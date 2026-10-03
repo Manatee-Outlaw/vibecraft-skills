@@ -56,8 +56,9 @@ move them back out into the task author's hands.
 13. **promise-reality-audit** — sentences the product or docs state about system state (copy, toasts, empty states, runbooks, CLAUDE.md, schedules) checked TRUE against the live signal
 14. **decision-conformance-audit** — every recorded owner decision written as an invariant, every code path that could violate it enumerated and proven, one cross-path test per decision
 15. **clock-and-timezone-audit** — Clock and timezone audit — every time comparison, schedule and 'today' names its clock (host TZ vs cron vs UTC vs user; DST; as_of)
+16. **fixture-realism-audit** — Fixture realism audit — tests fed what production feeds: real-input regression corpus, relative seeds, pins with reasons
 
-*To add skill #16: append it here with a one-line description.
+*To add skill #17: append it here with a one-line description.
 It will receive its own dedicated subagent in the next audit automatically.*
 
 ---
