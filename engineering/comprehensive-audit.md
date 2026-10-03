@@ -174,9 +174,14 @@ Before spawning any subagents, read all major project files completely:
   overlay, a delivered file. Not the template. Not the generator code. Not
   a fresh test render. An actual artifact an actual user actually received.
   Source files cannot tell you that a document ends mid-sentence or that
-  half a framework is missing from it. Pass it to the flow-test subagent.
-  If no real artifact can be obtained, say so explicitly in the report —
-  that is a gap in the audit's coverage, not a detail to omit.
+  half a framework is missing from it. Pass it to the flow-test AND the
+  render-smoke subagents (render it as the user saw it, at phone and
+  desktop widths). Save a copy in the audit folder so every subagent reads
+  the same artifact. If no real artifact can be obtained — including when a
+  permission policy refuses copying real user content out of production —
+  say so explicitly in the report, and say what was used instead (e.g. text
+  built from the code's own templates in the production shape): that is a
+  gap in the audit's coverage, not a detail to omit.
 
 Pass the relevant file contents as context when spawning each subagent.
 Each subagent needs the codebase to do its job.
@@ -214,7 +219,12 @@ of it, not just the skill it's specifically assigned. Each subagent must:
    fails. If the answer is "a broken product", it is not LOW. "Can this
    break?" and "is this doing its job?" are different questions with the
    same reassuring answer — ask both, and report the second one.
-5. Never change any files — report only
+5. Never change any files — report only. Each subagent gets its OWN private
+   scratch folder, named in its prompt (e.g. `<audit-folder>/<skill>/`), and
+   writes every repro script, dump and query result there. Never a shared
+   filename: in a measured run two subagents both wrote `prod_schema.txt` to
+   the shared scratchpad and one silently overwrote the other's evidence
+   mid-run. The findings file is the only thing written outside that folder.
 6. For ponytail-audit findings: triage as RESOLVED / KEPT AS-IS (with
    reasoning) / DEFERRED (with a stated trigger to revisit) — this same
    triage, via close-known-gaps, applies to every finding from every
@@ -235,3 +245,55 @@ Save the report to a dated file (comprehensive-audit-[date].md) rather
 than deleting it — this is the project's audit history and should persist.
 
 Do not fix anything automatically — this skill is audit and report only.
+
+---
+
+## Step 4 — Fix wave (ONLY when the user explicitly asks for fixes)
+
+The audit itself never fixes. When the user asks to "do all fixes", run this
+procedure; it is what kept a 50-finding fix wave across one large codebase to
+zero regressions and one deploy (measured 2026-10-02).
+
+1. **Verify before fixing.** Re-read each finding's proof yourself. Findings
+   reported by several subagents independently are usually the most real; a
+   finding with only code-review proof gets a repro first.
+2. **Batch the decisions, not the fixes.** Separate findings that need the
+   OWNER (they change what users or staff experience — sign-in methods, what a
+   delete button does, what a card promises) from those you can rule on. Ask
+   the owner all of theirs at once, with a recommendation each, while subagents
+   are still running. Record each answer as a dated decision.
+3. **Partition by file ownership.** Group the rest into batches so no two
+   batches edit the same functions (e.g. reports / bot / auth / UI / docs).
+   Where two batches must touch one file, assign each the exact region
+   ("only the Account email card markup and its handler").
+4. **One worktree + branch per batch**, created by the orchestrator from the
+   current main. One implementer subagent per batch, given: a shared rules file
+   (worktree only; never merge, push to main or deploy; TDD — every behaviour fix
+   has a test watched FAILING on the old code first, the break proven to have
+   landed; known environment-only test failures listed; no secrets; production
+   read-only) and its batch file (the findings by id, and every owner decision
+   and ruling verbatim). Each writes a per-batch report: change, test, red→green
+   proof, open questions.
+5. **Review each branch before merging.** Read the security-sensitive diffs
+   yourself (anything touching auth, identity, money or outbound messages).
+   Answer implementers' open questions as rulings; send small follow-ups back to
+   the same implementer rather than patching in the merge.
+6. **Integrate on a separate branch**, merging smallest/least-conflicting first.
+   Resolve each conflict by COMBINING both sides (two batches appending to the
+   same list or doc line), never by picking one; re-run the tests both sides
+   touched. Cross-batch concerns no batch owned (e.g. a new notification type
+   that must be scoped to the right audience) are fixed here with their own
+   red-first test.
+7. **Before merging any branch, confirm the pushed tip is the whole branch**
+   (no unpushed commits or uncommitted files in any worktree for it). A merged
+   branch once missed its author's final, unpushed commit; the trial merge and
+   the full suite both passed on the incomplete code.
+8. **Full suite in the main checkout** on the integrated code (not a worktree:
+   some tests only run there), plus the project's layout/journey checks. Then
+   deploy through the normal gated path, then any manual production steps the
+   batches listed (crontab, service units), each with a backup, a diff that shows
+   only the expected change, and a live verification.
+9. **Report** findings fixed / deferred (with triggers) / kept, the deployed
+   commit, and the suite results; record decisions and outcomes in the project's
+   roadmap or decision register the same day. Remove merged worktrees only after
+   checking each for uncommitted or unmerged work.
