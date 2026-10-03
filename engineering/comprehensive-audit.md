@@ -54,8 +54,9 @@ move them back out into the task author's hands.
 11. **render-smoke** — rendered-DOM broken-render signatures (undefined/NaN/$0/undefinedh) + interaction-backed fake-success, driven through seeded staging
 12. **persistence-audit** — write paths that silently stopped: tables that should be growing and aren't, and the guards that blocked themselves
 13. **promise-reality-audit** — sentences the product or docs state about system state (copy, toasts, empty states, runbooks, CLAUDE.md, schedules) checked TRUE against the live signal
+14. **decision-conformance-audit** — every recorded owner decision written as an invariant, every code path that could violate it enumerated and proven, one cross-path test per decision
 
-*To add skill #14: append it here with a one-line description.
+*To add skill #15: append it here with a one-line description.
 It will receive its own dedicated subagent in the next audit automatically.*
 
 ---
